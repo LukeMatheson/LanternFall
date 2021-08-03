@@ -1,0 +1,10 @@
+Database
+LanternFlyMapAccounts
+
+Tables
+HashedPasswords
+
+Table
+UserID | Hashed Passwords
+rv424  | asdjhgfknjkn2jnjkio43oj8709hnlknkjl4
+cs420  | kjhiohiohqweojohij7s86y98893oi2hhad2

@@ -1,0 +1,1 @@
+Everyone will need to do npm install. node modules is in .gitignore
