@@ -35,14 +35,43 @@ app.get('/user', function (req, res) {
     res.send();
 });
 
-app.get('/create', function (req, res) {
-    //account creation, prompt for email, username, and password
-    res.send();
+app.post('/login', function (req, res) {
+    if (!req.body.hasOwnProperty(email) || !req.body.hasOwnProperty(password) ||
+    !(password.length >= 5 && password.length <= 36)) {
+        res.status(401).send();
+    } else {
+        let text = `SELECT password FROM users WHERE email = $1`;
+        let values = [req.body.email];
+        pool.query(text, values, function (err, a) {
+            if (err) {
+                console.log(err.stack);
+                res.status(400).send();
+            } else {
+                if (a.rows.length === 0) {
+                    res.status(401).send();
+                }
+            }
+        })
+    }
 });
 
 app.post('/create', function (req, res) {
-    //send data from account creation to database
-    res.send();
+    if (!req.body.hasOwnProperty(email) || !req.body.hasOwnProperty(nickname) || !req.body.hasOwnProperty(password) ||
+    !(password.length >= 5 && password.length <= 36) || !(nickname.length >= 1 && nickname.length <= 20)) {
+        res.status(401).send();
+    } else {
+        let text = `INSERT INTO users(email, nickname, password) VALUES($1, $2, $3) RETURNING *`;
+        let values = [req.body.email, req.body.nickname, req.body.password];
+
+        pool.query(text, values, function (err, a) {
+            if (err) {
+                console.log(err.stack);
+                res.status(400).send();
+            } else {
+                res.status(200).send();
+            }
+        });
+    }
 });
 
 app.get('/history', function (req, res) {
@@ -50,18 +79,8 @@ app.get('/history', function (req, res) {
     res.send();
 });
 
-app.get('/kill', function (req, res) {
-    //webpage to input a kill
-    res.send();
-});
-
 app.post('/kill', function (req, res) {
     //send kill information to database
-    res.send();
-});
-
-app.get('/settings', function (req, res) {
-    //settings page, user should be able to change specified settings here
     res.send();
 });
 
