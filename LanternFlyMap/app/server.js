@@ -35,7 +35,7 @@ app.post('/login', function (req, res) {
     let password = req.body.password;
 
     if (
-        !req.body.hasOwnProperty(email) || !req.body.hasOwnProperty(password) ||
+        !req.body.hasOwnProperty("email") || !req.body.hasOwnProperty("password") ||
         !validateEmail(email) || !(password.length >= 5 && password.length <= 36) 
     ) {
         res.status(401);
@@ -90,7 +90,7 @@ app.post('/create', function (req, res) {
     let password = req.body.password;
 
     if (
-        !req.body.hasOwnProperty(email) || !req.body.hasOwnProperty(nickname) || !req.body.hasOwnProperty(password) ||
+        !req.body.hasOwnProperty("email") || !req.body.hasOwnProperty("nickname") || !req.body.hasOwnProperty("password") ||
         !validateEmail(email) || !(nickname.length >= 1 && nickname.length <= 32) || !(password.length >= 5 && password.length <= 36) 
     ) {
         res.status(401);
@@ -144,8 +144,6 @@ app.post('/create', function (req, res) {
     }
 });
 
-                let text = `INSERT INTO users(email, nickname, password) VALUES($1, $2, $3) RETURNING *`;
-                let values = [email, nickname, password];
 app.get('/history', function (req, res) {
     //kill history for current user
     res.send();
