@@ -22,11 +22,6 @@ pool.connect().then(function () {
 app.use(express.static("public_html"));
 app.use(express.json());
 
-app.get('/', function (req, res) {
-    //main hub, display map and kill button
-    res.send();
-});
-
 app.get('/user', function (req, res) {
     let userid = req.query.id;
     //profile page, send query call to database and retrieve info
@@ -36,44 +31,121 @@ app.get('/user', function (req, res) {
 });
 
 app.post('/login', function (req, res) {
-    if (!req.body.hasOwnProperty(email) || !req.body.hasOwnProperty(password) ||
-    !(password.length >= 5 && password.length <= 36)) {
-        res.status(401).send();
-    } else {
+    let email = req.body.email;
+    let password = req.body.password;
+
+    if (
+        !req.body.hasOwnProperty(email) || !req.body.hasOwnProperty(password) ||
+        !validateEmail(email) || !(password.length >= 5 && password.length <= 36) 
+    ) {
+        res.status(401);
+        res.json({error: "Invalid credentials"});
+    } 
+    
+    else {
         let text = `SELECT password FROM users WHERE email = $1`;
-        let values = [req.body.email];
-        pool.query(text, values, function (err, a) {
+        let values = [email];
+
+        pool.query(text, values, function (err, data) {
             if (err) {
                 console.log(err.stack);
-                res.status(400).send();
-            } else {
-                if (a.rows.length === 0) {
-                    res.status(401).send();
-                }
+                res.status(400);
+                res.json({error: "Something went wrong"});
+            } 
+            
+            else if (data.rows.length === 0) {
+                res.status(401);
+                res.json({error: "No account exists"});
             }
-        })
+
+            else {
+                let hashedPassword = data.rows[0].password;
+
+                bcrypt.compare(password, hashedPassword, function(err, data) {
+                    if (err) {
+                        console.log(err);
+                        res.status(500);
+                        res.json({error: "Something went wrong"});
+                    }
+
+                    else if (data) {
+                        // TODO Implement sessionStorage
+                        res.status(200);
+                        res.json({success: "Works correctly"});
+                    }
+
+                    else {
+                        res.status(401);
+                        res.json({error: "Invalid credentials"});
+                    }
+                });
+            } 
+        });
     }
 });
 
 app.post('/create', function (req, res) {
-    if (!req.body.hasOwnProperty(email) || !req.body.hasOwnProperty(nickname) || !req.body.hasOwnProperty(password) ||
-    !(password.length >= 5 && password.length <= 36) || !(nickname.length >= 1 && nickname.length <= 20)) {
-        res.status(401).send();
-    } else {
-        let text = `INSERT INTO users(email, nickname, password) VALUES($1, $2, $3) RETURNING *`;
-        let values = [req.body.email, req.body.nickname, req.body.password];
+    let email = req.body.email;
+    let nickname = req.body.nickname;
+    let password = req.body.password;
 
-        pool.query(text, values, function (err, a) {
+    if (
+        !req.body.hasOwnProperty(email) || !req.body.hasOwnProperty(nickname) || !req.body.hasOwnProperty(password) ||
+        !validateEmail(email) || !(nickname.length >= 1 && nickname.length <= 32) || !(password.length >= 5 && password.length <= 36) 
+    ) {
+        res.status(401);
+        res.json({error: "Invalid credentials"});
+    } 
+    
+    else {
+        let text = `SELECT * FROM users WHERE email = $1`;
+        let values = [email];
+
+        pool.query(text, values, function(err, data) {
             if (err) {
                 console.log(err.stack);
-                res.status(400).send();
-            } else {
-                res.status(200).send();
+                res.status(400);
+                res.json({error: "Something went wrong"});
+            } 
+            
+            else if (data.rows.length > 0) {
+                res.status(401);
+                res.json({error: "Account already exists"});
+            }
+
+            else {
+                bcrypt.hash(password, saltRounds, function(err, hash) {
+                    if (err) {
+                        console.log(err);
+                        res.status(500);
+                        res.json({error: "Something went wrong"});
+                    }
+
+                    else {
+                        let text = `INSERT INTO users(email, nickname, password) VALUES($1, $2, $3) RETURNING *`;
+                        let values = [email, nickname, hash];
+
+                        pool.query(text, values, function(err, data) {
+                            if (err) {
+                                console.log(err.stack);
+                                res.status(400);
+                                res.json({error: "Something went wrong"});
+                            }
+
+                            else {
+                                res.status(200);
+                                res.json({success: "Works correctly"});
+                            }
+                        });
+                    }
+                });
             }
         });
     }
 });
 
+                let text = `INSERT INTO users(email, nickname, password) VALUES($1, $2, $3) RETURNING *`;
+                let values = [email, nickname, password];
 app.get('/history', function (req, res) {
     //kill history for current user
     res.send();
@@ -93,3 +165,9 @@ app.post('/settings', function (req, res) {
 app.listen(port, hostname, () => {
     console.log(`Listening at: http://${hostname}:${port}`);
 });
+
+// https://stackoverflow.com/questions/46155/how-to-validate-an-email-address-in-javascript
+function validateEmail(email) {
+    const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(String(email).toLowerCase());
+}
