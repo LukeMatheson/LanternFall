@@ -21,7 +21,7 @@ pool.connect().then(function () {
 app.use(express.static("public_html"));
 app.use(express.json());
 
-app.post('/user', function (req, res) {
+app.get('/user', function (req, res) {
     let userid = req.query.id;
     //profile page, send query call to database and retrieve info
     //should use query string to get username, so something like:
@@ -29,7 +29,7 @@ app.post('/user', function (req, res) {
     res.send();
 });
 
-app.post('/login', function (req, res) {
+app.post('/login',async function (req, res) {
     let email = req.body.email;
     let password = req.body.password;
 
@@ -42,49 +42,43 @@ app.post('/login', function (req, res) {
     } 
     
     else {
-        let text = `SELECT password FROM users WHERE email = $1`;
-        let values = [email];
+        let hashedPassword = await getPassword(email);
 
-        pool.query(text, values, function (err, data) {
-            if (err) {
-                console.log(err.stack);
-                res.status(400);
-                res.json({error: "Something went wrong"});
-            } 
-            
-            else if (data.rows.length === 0) {
-                res.status(401);
-                res.json({error: "No account exists"});
-            }
+        if (hashedPassword === "error") {
+            res.status(400);
+            res.json({error: "Something went wrong"});
+        }
 
-            else {
-                let hashedPassword = data.rows[0].password;
+        else if (hashedPassword === "false") {
+            res.status(401);
+            res.json({error: "No account exists"});
+        }
 
-                bcrypt.compare(password, hashedPassword, function(err, data) {
-                    if (err) {
-                        console.log(err);
-                        res.status(500);
-                        res.json({error: "Something went wrong"});
-                    }
+        else {
+            bcrypt.compare(password, hashedPassword, function(err, data) {
+                if (err) {
+                    console.log(err);
+                    res.status(500);
+                    res.json({error: "Something went wrong"});
+                }
 
-                    else if (data) {
-                        let payload = {email: email, password: password};
+                else if (data) {
+                    let payload = {email: email, password: password};
 
-                        res.status(200);
-                        res.json({token: jwt.encode(payload, secret)});
-                    }
+                    res.status(200);
+                    res.json({token: jwt.encode(payload, secret)});
+                }
 
-                    else {
-                        res.status(401);
-                        res.json({error: "Invalid credentials"});
-                    }
-                });
-            } 
-        });
+                else {
+                    res.status(401);
+                    res.json({error: "Invalid credentials"});
+                }
+            });
+        }
     }
 });
 
-app.post('/create', function (req, res) {
+app.post('/create',async function (req, res) {
     let email = req.body.email;
     let nickname = req.body.nickname;
     let password = req.body.password;
@@ -98,49 +92,51 @@ app.post('/create', function (req, res) {
     } 
     
     else {
-        let text = `SELECT * FROM users WHERE email = $1`;
-        let values = [email];
+        let emailExists = await doesValueExist("email", email);
+        let nicknameExists = await doesValueExist("nickname", nickname);
 
-        pool.query(text, values, function(err, data) {
-            if (err) {
-                console.log(err.stack);
-                res.status(400);
-                res.json({error: "Something went wrong"});
-            } 
-            
-            else if (data.rows.length > 0) {
-                res.status(401);
-                res.json({error: "Account already exists"});
-            }
+        if (emailExists === "error" || nicknameExists === "error") {
+            res.status(400);
+            res.json({error: "Something went wrong"});
+        }
 
-            else {
-                bcrypt.hash(password, saltRounds, function(err, hash) {
-                    if (err) {
-                        console.log(err);
-                        res.status(500);
-                        res.json({error: "Something went wrong"});
-                    }
+        else if (emailExists === "true") {
+            res.status(401);
+            res.json({error: "Account already exists"});
+        } 
 
-                    else {
-                        let text = `INSERT INTO users(email, nickname, password) VALUES($1, $2, $3) RETURNING *`;
-                        let values = [email, nickname, hash];
+        else if (nicknameExists === "true") {
+            res.status(401);
+            res.json({error: "Nickname already exists"});
+        }
 
-                        pool.query(text, values, function(err, data) {
-                            if (err) {
-                                console.log(err.stack);
-                                res.status(400);
-                                res.json({error: "Something went wrong"});
-                            }
+        else {
+            bcrypt.hash(password, saltRounds, function(err, hash) {
+                if (err) {
+                    console.log(err);
+                    res.status(500);
+                    res.json({error: "Something went wrong"});
+                }
 
-                            else {
-                                res.status(200);
-                                res.json({success: "Works correctly"});
-                            }
-                        });
-                    }
-                });
-            }
-        });
+                else {
+                    let text = `INSERT INTO users(email, nickname, password) VALUES($1, $2, $3) RETURNING *`;
+                    let values = [email, nickname, hash];
+
+                    pool.query(text, values, function(err, data) {
+                        if (err) {
+                            console.log(err.stack);
+                            res.status(400);
+                            res.json({error: "Something went wrong"});
+                        }
+
+                        else {
+                            res.status(200);
+                            res.json({success: "Account created"});
+                        }
+                    });
+                }
+            });
+        }
     }
 });
 
@@ -168,4 +164,43 @@ app.listen(port, hostname, () => {
 function validateEmail(email) {
     const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     return re.test(String(email).toLowerCase());
+}
+
+async function doesValueExist(category, value) {
+    let text = `SELECT * FROM users WHERE ${category} = $1`;
+    let values = [value];
+    try {
+        const res = await pool.query(text, values);
+        
+        if (res.rows.length > 0) {
+            return "true";
+        }
+
+        else {
+            return "false";
+        }
+    } catch (err) {
+        console.log(err.stack);
+        return "error";
+    } 
+}
+
+async function getPassword(email) {
+    let text = `SELECT password FROM users WHERE email = $1`;
+    let values = [email];
+
+    try {
+        const res = await pool.query(text, values);
+        
+        if (res.rows.length === 0) {
+            return "false";
+        }
+
+        else {
+            return res.rows[0].password;
+        }
+    } catch (err) {
+        console.log(err.stack);
+        return "error";
+    } 
 }
