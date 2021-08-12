@@ -1,16 +1,14 @@
 const pg = require("pg");
 const bcrypt = require("bcrypt");
 const express = require("express");
+const jwt = require("jwt-simple");
 const app = express();
 
 const port = 3000;
 const hostname = "localhost";
 
-// number of rounds the bcrypt algorithm will use to generate the salt
-// the more rounds, the longer it takes
-// so the salt will be more secure
-// https://github.com/kelektiv/node.bcrypt.js#a-note-on-rounds
 const saltRounds = 10;
+const secret = "*WaRsiZKrap";
 
 const env = require("../env.json");
 const Pool = pg.Pool;
@@ -23,7 +21,7 @@ pool.connect().then(function () {
 app.use(express.static("public_html"));
 app.use(express.json());
 
-app.get('/user', function (req, res) {
+app.post('/user', function (req, res) {
     let userid = req.query.id;
     //profile page, send query call to database and retrieve info
     //should use query string to get username, so something like:
@@ -70,9 +68,10 @@ app.post('/login', function (req, res) {
                     }
 
                     else if (data) {
-                        // TODO Implement sessionStorage
+                        let payload = {email: email, password: password};
+
                         res.status(200);
-                        res.json({success: "Works correctly"});
+                        res.json({token: jwt.encode(payload, secret)});
                     }
 
                     else {
@@ -169,4 +168,42 @@ app.listen(port, hostname, () => {
 function validateEmail(email) {
     const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     return re.test(String(email).toLowerCase());
+}
+
+function nicknameExists(nickname) {
+    let text = `SELECT * FROM users WHERE nickname = $1`;
+    let values = [nickname];
+
+    pool.query(text, values, function (err, data) {
+        if (err) {
+            console.log(err.stack);
+        } 
+        
+        else if (data.rows.length > 0) {
+            return false;
+        }
+
+        else {
+            return true;
+        } 
+    });
+}
+
+function emailExists(email) {
+    let text = `SELECT * FROM users WHERE email = $1`;
+    let values = [email];
+
+    pool.query(text, values, function (err, data) {
+        if (err) {
+            console.log(err.stack);
+        } 
+        
+        else if (data.rows.length > 0) {
+            return false;
+        }
+
+        else {
+            return true;
+        } 
+    });
 }
