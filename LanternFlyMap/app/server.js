@@ -27,7 +27,7 @@ app.post('/login',async function (req, res) {
 
     if (
         !req.body.hasOwnProperty("email") || !req.body.hasOwnProperty("password") ||
-        !validateEmail(email) || !(password.length >= 5 && password.length <= 36) 
+        !validateEmail(email) || !(password.length >= 5 && password.length <= 64) 
     ) {
         res.status(401);
         res.json({error: "Invalid credentials"});
@@ -77,7 +77,7 @@ app.post('/create',async function (req, res) {
 
     if (
         !req.body.hasOwnProperty("email") || !req.body.hasOwnProperty("nickname") || !req.body.hasOwnProperty("password") ||
-        !validateEmail(email) || !(nickname.length >= 1 && nickname.length <= 32) || !(password.length >= 5 && password.length <= 36) 
+        !validateEmail(email) || !(nickname.length >= 1 && nickname.length <= 64) || !(password.length >= 5 && password.length <= 64) 
     ) {
         res.status(401);
         res.json({error: "Invalid credentials"});
@@ -133,15 +133,17 @@ app.post('/create',async function (req, res) {
 });
 
 app.get('/history', function (req, res) {
-    let user = req.query.user;
-    let text = `SELECT * FROM kills WHERE user_id = '${user}`;
+    let text = `SELECT * FROM kills WHERE user_id = $1`;
+    let values = [req.query.user];
 
-    pool.query(text, function (err, data) {
+    pool.query(text, values, function (err, data) {
         if (err) {
             console.log(err.stack);
             res.status(400);
             res.json({error: "Something went wrong"});
-        } else {
+        } 
+        
+        else {
             res.status(200);
             res.json({info: data});
         }
@@ -150,24 +152,26 @@ app.get('/history', function (req, res) {
 
 app.post('/kill', function (req, res) {
     let user = req.body.user;
-    let name = req.body.name;
     let date = req.body.date;
     let latitude = req.body.latitude;
     let longitude = req.body.longitude;
+    let name = req.body.name;
     let comments = req.body.comments;
     let image = req.body.image;
 
     //Not doing user validation here since we are taking the primary key from the users table itself
     //Not sure how to validate date/location/image, I figure that date might need to be validated client-side but I could be wrong
 
-    if (!req.body.hasOwnProperty("user") || !req.body.hasOwnProperty("name") || !req.body.hasOwnProperty("date") ||
-        !req.body.hasOwnProperty("latitude") || !req.body.hasOwnProperty("longitude") || !req.body.hasOwnProperty("comments") || 
+    if (!req.body.hasOwnProperty("user") ||  !req.body.hasOwnProperty("date") || !req.body.hasOwnProperty("latitude") || 
+        !req.body.hasOwnProperty("longitude") || !req.body.hasOwnProperty("name") || !req.body.hasOwnProperty("comments") || 
         !req.body.hasOwnProperty("image") || !(name.length >= 1 && name.length <= 50) || !(comments.length >= 1 && comments.length <= 300)) 
     {
         res.status(401);
         res.json({error: "Invalid data, please try again"});
-    } else {
-        let text = `INSERT INTO kills(user_id, date, loc_lat, loc_lon, nickname, description, image_name) VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING *`;
+    } 
+    
+    else {
+        let text = `INSERT INTO kills(user_id, date, loc_lat, loc_lon, nickname, description, image_name) VALUES($1, $2, $3, $4, $5, $6, $7)`;
         let values = [user, date, latitude, longitude, name, comments, image];
 
         pool.query(text, values, function (err, data) {
