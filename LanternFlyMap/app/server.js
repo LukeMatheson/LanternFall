@@ -21,14 +21,6 @@ pool.connect().then(function () {
 app.use(express.static("public_html"));
 app.use(express.json());
 
-app.get('/user', function (req, res) {
-    let userid = req.query.id;
-    //profile page, send query call to database and retrieve info
-    //should use query string to get username, so something like:
-    //http://localhost:3000/user?id="some id here"
-    res.send();
-});
-
 app.post('/login',async function (req, res) {
     let email = req.body.email;
     let password = req.body.password;
@@ -141,18 +133,58 @@ app.post('/create',async function (req, res) {
 });
 
 app.get('/history', function (req, res) {
-    //kill history for current user
-    res.send();
+    let user = req.query.user;
+    let text = `SELECT * FROM kills WHERE user_id = '${user}`;
+
+    pool.query(text, function (err, data) {
+        if (err) {
+            console.log(err.stack);
+            res.status(400);
+            res.json({error: "Something went wrong"});
+        } else {
+            res.status(200);
+            res.json({info: data});
+        }
+    });
 });
 
 app.post('/kill', function (req, res) {
-    //send kill information to database
-    res.send();
+    let user = req.body.user;
+    let name = req.body.name;
+    let date = req.body.date;
+    let latitude = req.body.latitude;
+    let longitude = req.body.longitude;
+    let comments = req.body.comments;
+    let image = req.body.image;
+
+    //Not doing user validation here since we are taking the primary key from the users table itself
+    //Not sure how to validate date/location/image, I figure that date might need to be validated client-side but I could be wrong
+
+    if (!req.body.hasOwnProperty("user") || !req.body.hasOwnProperty("name") || !req.body.hasOwnProperty("date") ||
+        !req.body.hasOwnProperty("latitude") || !req.body.hasOwnProperty("longitude") || !req.body.hasOwnProperty("comments") || 
+        !req.body.hasOwnProperty("image") || !(name.length >= 1 && name.length <= 50) || !(comments.length >= 1 && comments.length <= 300)) 
+    {
+        res.status(401);
+        res.json({error: "Invalid data, please try again"});
+    } else {
+        let text = `INSERT INTO kills(user_id, date, loc_lat, loc_lon, nickname, description, image_name) VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING *`;
+        let values = [user, date, latitude, longitude, name, comments, image];
+
+        pool.query(text, values, function (err, data) {
+            if (err) {
+                console.log(err.stack);
+                res.status(400);
+                res.json({error: "Something went wrong"});
+            } else {
+                res.status(200);
+                res.json({success: "Kill logged"});
+            }
+        });
+    }
 });
 
 app.post('/settings', function (req, res) {
-    //send any updated settings changes to database/wherever it needs to go
-    //may not need this, so double check
+    //What settings are we changing here?
     res.send();
 });
 
