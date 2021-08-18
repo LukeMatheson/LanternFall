@@ -3,20 +3,49 @@ function onclick() {
     let email = document.getElementsByName("Email")[0].value;
     let password = document.getElementsByName("Pass")[0].value;
     let confirm = document.getElementsByName("Confirm")[0].value;
-    let error = document.getElementById("error-msg");
+    let err = document.getElementById("error-msg");
 
     while (error.firstChild) {
-        error.removeChild(error.firstChild);
+        err.removeChild(err.firstChild);
     }
 
     if (password === confirm) {
+        let data = {
+            email: email,
+            nickname: username,
+            password: password
+        }
+        let code = 200;
+
         fetch('/create', {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
-            
-        })
+            body: JSON.stringify(data),
+        }).then(function (response) {
+            code = response.status;
+            return response.json();
+        }).then(function (data) {
+            if (code === 200) {
+                let div = document.createElement("div");
+                div.textContent = data.success;
+                err.append(div);
+            } else {
+                let div = document.createElement("div");
+                div.textContent = data.error;
+                err.append(div);
+            }
+        }).catch(function (e) {
+            console.log(e);
+            let div = document.createElement("div");
+            div.textContent = "Something went wrong";
+            err.append(div);
+        });
+    } else {
+        let div = document.createElement("div");
+        div.textContent = "Passwords must match";
+        err.append(div);
     }
 }
 
