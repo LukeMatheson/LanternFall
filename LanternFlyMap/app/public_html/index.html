@@ -1,11 +1,25 @@
 <!DOCTYPE html>
 <html>
+<head>
+    <style>
+        div {
+            padding: 5px;
+        }
+        button {
+            padding: 5px;
+        }
+    </style>
+</head>
 <body>
+<div>
+    <input type="text" placeholder="Email" id="email" required>
+</div>
+<div>
+    <input type="password" placeholder="Password" id="pwd" required>
+</div>
+<div id="error"></div>
 
-<h1>My First Heading</h1>
-<p>My first paragraph.</p>
-
-<button id="test-button">Test</button>
+<button id="login-button">Login</button>
 
 <script src="index.js"></script>
 </body>

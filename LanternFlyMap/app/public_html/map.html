@@ -1,12 +1,22 @@
 <!DOCTYPE html>
 <html>
-<body>
+  <head>
+    <title>Kill Map</title>
+    <style>
+        #map {
+            height: 50%;
+        }
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
 
-<h1>My First Heading</h1>
-<p>My first paragraph.</p>
-
-<button id="test-button">Test</button>
-
-<script src="map.js"></script>
-</body>
+    </style>
+  </head>
+  <body>
+    <div id="map"></div>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyADWehSNfJTjlxCe5XSMTF1pPKo_LP7HqE&v=weekly"></script>
+    <script src="map.js"></script>
+  </body>
 </html>

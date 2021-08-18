@@ -27,7 +27,7 @@ app.post('/login',async function (req, res) {
 
     if (
         !req.body.hasOwnProperty("email") || !req.body.hasOwnProperty("password") ||
-        !validateEmail(email) || !(password.length >= 5 && password.length <= 64) 
+        !validateEmail(email) || !(password.length >= 5 && password.length <= 64)
     ) {
         res.status(401);
         res.json({error: "Invalid credentials"});
