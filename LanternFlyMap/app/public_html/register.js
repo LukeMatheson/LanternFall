@@ -5,12 +5,12 @@ function onclick() {
     let confirm = document.getElementsByName("Confirm")[0].value;
     let err = document.getElementById("error-msg");
 
-    while (error.firstChild) {
+    while (err.firstChild) {
         err.removeChild(err.firstChild);
     }
 
     if (password === confirm) {
-        let data = {
+        let values = {
             email: email,
             nickname: username,
             password: password
@@ -22,7 +22,7 @@ function onclick() {
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify(data),
+            body: JSON.stringify(values),
         }).then(function (response) {
             code = response.status;
             return response.json();
@@ -36,8 +36,8 @@ function onclick() {
                 div.textContent = data.error;
                 err.append(div);
             }
-        }).catch(function (e) {
-            console.log(e);
+        }).catch(function (error) {
+            console.log(error);
             let div = document.createElement("div");
             div.textContent = "Something went wrong";
             err.append(div);

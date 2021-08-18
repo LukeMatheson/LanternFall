@@ -164,15 +164,16 @@ app.post('/kill', function (req, res) {
 
     if (!req.body.hasOwnProperty("user") ||  !req.body.hasOwnProperty("date") || !req.body.hasOwnProperty("latitude") || 
         !req.body.hasOwnProperty("longitude") || !req.body.hasOwnProperty("name") || !req.body.hasOwnProperty("comments") || 
-        !req.body.hasOwnProperty("image") || !(name.length >= 1 && name.length <= 50) || !(comments.length >= 1 && comments.length <= 300)) 
+        !(name.length >= 1 && name.length <= 60) || !(comments.length >= 1 && comments.length <= 240)) 
     {
         res.status(401);
         res.json({error: "Invalid data, please try again"});
     } 
     
     else {
-        let text = `INSERT INTO kills(user_id, date, loc_lat, loc_lon, nickname, description, image_name) VALUES($1, $2, $3, $4, $5, $6, $7)`;
-        let values = [user, date, latitude, longitude, name, comments, image];
+        let imageExists = true;
+        let text = `INSERT INTO kills (user_id, date, loc_lat, loc_lon, nickname, description, img_exist) VALUES($1, $2, $3, $4, $5, $6, $7)`;
+        let values = [user, date, latitude, longitude, name, comments, imageExists];
 
         pool.query(text, values, function (err, data) {
             if (err) {

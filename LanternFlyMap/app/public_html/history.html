@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <style>
+            #history-table {
+                border-collapse: collapse;
+            }
+
+            .head-cell {
+                border: 1px solid black;
+                padding: 10px;
+                font-weight: bold;
+                border-collapse: collapse;
+            }
+        </style>
+    </head>
+
+    <body>
+        <h1>Kill History</h1>
+
+        <form>
+            Enter a username:
+            <input type="text" name="user-search">
+        </form>
+
+        <button id="search-button">Search</button>
+
+        <div id="error-msg"></div>
+        <br>
+
+        <table id="history-table">
+            <tr>
+                <td class="head-cell">Date</td>
+                <td class="head-cell">Kill Name</td>
+                <td class="head-cell">Latitude</td>
+                <td class="head-cell">Longitude</td>
+                <td class="head-cell">Description</td>
+            </tr>
+        </table>
+
+        <script src="history.js"></script>
+    </body>
+</html>
