@@ -93,12 +93,12 @@ app.post('/create', async function (req, res) {
             res.json({error: "Something went wrong"});
         }
 
-        else if (emailExists.length > 0) {
+        else if (emailExists !== "false") {
             res.status(401);
             res.json({error: "Account already exists"});
         } 
 
-        else if (usernameExists.length > 0) {
+        else if (usernameExists !== "false") {
             res.status(401);
             res.json({error: "Username already exists"});
         }
