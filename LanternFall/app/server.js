@@ -34,7 +34,8 @@ app.post('/login', async function (req, res) {
     } 
     
     else {
-        let hashedPassword = await getPassword(email);
+        let user = await getValue("users", "email", email);
+        let hashedPassword = user[0].password;
 
         if (hashedPassword === "error") {
             res.status(400);
@@ -61,9 +62,10 @@ app.post('/login', async function (req, res) {
 
             else {
                 let payload = {email: email, password: password}
+                let username = user[0].username;
 
                 res.status(200);
-                res.json({token: jwt.encode(payload, secret)});
+                res.json({token: jwt.encode(payload, secret), username: username});
             }
         }
     }
@@ -71,12 +73,12 @@ app.post('/login', async function (req, res) {
 
 app.post('/create', async function (req, res) {
     let email = req.body.email;
-    let nickname = req.body.nickname;
+    let username = req.body.username;
     let password = req.body.password;
 
     if (
-        !req.body.hasOwnProperty("email") || !req.body.hasOwnProperty("nickname") || !req.body.hasOwnProperty("password") ||
-        !validateEmail(email) || !(nickname.length >= 5 && nickname.length <= 64) || !(password.length >= 5 && password.length <= 64) 
+        !req.body.hasOwnProperty("email") || !req.body.hasOwnProperty("username") || !req.body.hasOwnProperty("password") ||
+        !validateEmail(email) || !(username.length >= 5 && username.length <= 64) || !(password.length >= 5 && password.length <= 64) 
     ) {
         res.status(401);
         res.json({error: "Invalid credentials"});
@@ -84,9 +86,9 @@ app.post('/create', async function (req, res) {
     
     else {
         let emailExists = await getValue("users", "email", email);
-        let nicknameExists = await getValue("users", "nickname", nickname);
+        let usernameExists = await getValue("users", "username", username);
 
-        if (emailExists === "error" || nicknameExists === "error") {
+        if (emailExists === "error" || usernameExists === "error") {
             res.status(400);
             res.json({error: "Something went wrong"});
         }
@@ -96,9 +98,9 @@ app.post('/create', async function (req, res) {
             res.json({error: "Account already exists"});
         } 
 
-        else if (nicknameExists.length > 0) {
+        else if (usernameExists.length > 0) {
             res.status(401);
-            res.json({error: "Nickname already exists"});
+            res.json({error: "Username already exists"});
         }
 
         else {
@@ -110,7 +112,7 @@ app.post('/create', async function (req, res) {
             }
 
             else {
-                let isAccountCreated = await createAccount(email, nickname, hashedPassword);
+                let isAccountCreated = await createAccount(email, username, hashedPassword);
 
                 if (isAccountCreated === "false") {
                     res.status(400);
@@ -127,7 +129,8 @@ app.post('/create', async function (req, res) {
 });
 
 app.get('/history', async function (req, res) {
-    let killHistory = await getValue("kills", "email", email);
+    let username = req.query.username;
+    let killHistory = await getValue("kills", "username", username);
 
     if (killHistory === "error") {
         res.status(400);
@@ -196,7 +199,8 @@ function validateEmail(email) {
 async function validateToken(token) {
     let decoded = jwt.decode(token, secret);
 
-    let hashedPassword = await getPassword(decoded.email);
+    let users = await getValue("users", "email", decoded.email);
+    let hashedPassword = users[0].password; 
     let accountExists = await validatePassword(decoded.password, hashedPassword);
 
     if (accountExists === "true") {
@@ -238,9 +242,9 @@ async function createHashPassword(password) {
     }
 }
 
-async function createAccount(email, nickname, hashedPassword) {
-    let text = `INSERT INTO users(email, nickname, password) VALUES($1, $2, $3) RETURNING *`;
-    let values = [email, nickname, hashedPassword];
+async function createAccount(email, username, hashedPassword) {
+    let text = `INSERT INTO users(email, username, password) VALUES($1, $2, $3) RETURNING *`;
+    let values = [email, username, hashedPassword];
     
     try {
         const res = await pool.query(text, values);
@@ -266,27 +270,6 @@ async function getValue(table, category, value) {
 
         else {
             return "false";
-        }
-
-    } catch (err) {
-        console.log(err.stack);
-        return "error";
-    } 
-}
-
-async function getPassword(email) {
-    let text = `SELECT password FROM users WHERE email = $1`;
-    let values = [email];
-
-    try {
-        const res = await pool.query(text, values);
-        
-        if (res.rows.length === 0) {
-            return "false";
-        }
-
-        else {
-            return res.rows[0].password;
         }
 
     } catch (err) {
