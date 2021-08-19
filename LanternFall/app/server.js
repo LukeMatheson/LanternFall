@@ -21,7 +21,7 @@ pool.connect().then(function () {
 app.use(express.static("public_html"));
 app.use(express.json());
 
-app.post('/login',async function (req, res) {
+app.post('/login', async function (req, res) {
     let email = req.body.email;
     let password = req.body.password;
 
@@ -69,7 +69,7 @@ app.post('/login',async function (req, res) {
     }
 });
 
-app.post('/create',async function (req, res) {
+app.post('/create', async function (req, res) {
     let email = req.body.email;
     let nickname = req.body.nickname;
     let password = req.body.password;
@@ -126,7 +126,7 @@ app.post('/create',async function (req, res) {
     }
 });
 
-app.get('/history', function (req, res) {
+app.get('/history', async function (req, res) {
     let killHistory = await getValue("kills", "email", email);
 
     if (killHistory === "error") {
