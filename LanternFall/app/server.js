@@ -83,20 +83,20 @@ app.post('/create',async function (req, res) {
     } 
     
     else {
-        let emailExists = await doesValueExist("email", email);
-        let nicknameExists = await doesValueExist("nickname", nickname);
+        let emailExists = await getValue("users", "email", email);
+        let nicknameExists = await getValue("users", "nickname", nickname);
 
         if (emailExists === "error" || nicknameExists === "error") {
             res.status(400);
             res.json({error: "Something went wrong"});
         }
 
-        else if (emailExists === "true") {
+        else if (emailExists.length > 0) {
             res.status(401);
             res.json({error: "Account already exists"});
         } 
 
-        else if (nicknameExists === "true") {
+        else if (nicknameExists.length > 0) {
             res.status(401);
             res.json({error: "Nickname already exists"});
         }
@@ -127,21 +127,17 @@ app.post('/create',async function (req, res) {
 });
 
 app.get('/history', function (req, res) {
-    let text = `SELECT * FROM kills WHERE user_id = $1`;
-    let values = [req.query.user];
+    let killHistory = await getValue("kills", "email", email);
 
-    pool.query(text, values, function (err, data) {
-        if (err) {
-            console.log(err.stack);
-            res.status(400);
-            res.json({error: "Something went wrong"});
-        } 
-        
-        else {
-            res.status(200);
-            res.json({info: data});
-        }
-    });
+    if (killHistory === "error") {
+        res.status(400);
+        res.json({error: "Something went wrong"});
+    }
+
+    else {
+        res.status(200);
+        res.json({info: killHistory});
+    }
 });
 
 app.post('/kill', function (req, res) {
@@ -257,15 +253,15 @@ async function createAccount(email, nickname, hashedPassword) {
     } 
 }
 
-async function doesValueExist(category, value) {
-    let text = `SELECT * FROM users WHERE ${category} = $1`;
+async function getValue(table, category, value) {
+    let text = `SELECT * FROM ${table} WHERE ${category} = $1`;
     let values = [value];
 
     try {
         const res = await pool.query(text, values);
         
         if (res.rows.length > 0) {
-            return "true";
+            return res.rows;
         }
 
         else {
