@@ -149,8 +149,22 @@ app.post('/kill', function (req, res) {
     let comments = req.body.comments;
     let image = req.body.image;
 
-    //Not doing user validation here since we are taking the primary key from the users table itself
-    //Not sure how to validate date/location/image, I figure that date might need to be validated client-side but I could be wrong
+    let text = `SELECT * FROM users WHERE nickname = '${user}'`;
+    pool.query(text, function (err, data) {
+        if (err) {
+            console.log(err.stack);
+            res.status(400);
+            res.json({error: "Something went wrong"});
+        } else {
+            if (data.length === 0) {
+                res.status(401);
+                res.json({error: "Username does not exist"});
+            } else {
+                user = data.nickname;
+                console.log(user);
+            }
+        }
+    });
 
     if (!req.body.hasOwnProperty("user") ||  !req.body.hasOwnProperty("date") || !req.body.hasOwnProperty("latitude") || 
         !req.body.hasOwnProperty("longitude") || !req.body.hasOwnProperty("name") || !req.body.hasOwnProperty("comments") || 
@@ -162,7 +176,7 @@ app.post('/kill', function (req, res) {
     
     else {
         let imageExists = true;
-        let text = `INSERT INTO kills (user_id, date, loc_lat, loc_lon, nickname, description, img_exist) VALUES($1, $2, $3, $4, $5, $6, $7)`;
+        text = `INSERT INTO kills (user_id, date, loc_lat, loc_lon, nickname, description, img_exist) VALUES($1, $2, $3, $4, $5, $6, $7)`;
         let values = [user, date, latitude, longitude, name, comments, imageExists];
 
         pool.query(text, values, function (err, data) {
