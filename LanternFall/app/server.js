@@ -21,13 +21,13 @@ pool.connect().then(function () {
 app.use(express.static("public_html"));
 app.use(express.json());
 
-app.post('/login',async function (req, res) {
+app.post('/login', async function (req, res) {
     let email = req.body.email;
     let password = req.body.password;
 
     if (
         !req.body.hasOwnProperty("email") || !req.body.hasOwnProperty("password") ||
-        !validateEmail(email) || !(password.length >= 5 && password.length <= 64) 
+        !validateEmail(email) || !(password.length >= 5 && password.length <= 64)
     ) {
         res.status(401);
         res.json({error: "Invalid credentials"});
@@ -47,107 +47,97 @@ app.post('/login',async function (req, res) {
         }
 
         else {
-            bcrypt.compare(password, hashedPassword, function(err, data) {
-                if (err) {
-                    console.log(err);
-                    res.status(500);
-                    res.json({error: "Something went wrong"});
-                }
+            let accountExists = await validatePassword(password, hashedPassword);
 
-                else if (data) {
-                    let payload = {email: email, password: password};
+            if (accountExists === "error") {
+                res.status(500);
+                res.json({error: "Something went wrong"});
+            }
 
-                    res.status(200);
-                    res.json({token: jwt.encode(payload, secret)});
-                }
+            else if (accountExists === "false") {
+                res.status(401);
+                res.json({error: "Invalid credentials"});
+            }
 
-                else {
-                    res.status(401);
-                    res.json({error: "Invalid credentials"});
-                }
-            });
+            else {
+                let payload = {email: email, password: password}
+
+                res.status(200);
+                res.json({token: jwt.encode(payload, secret)});
+            }
         }
     }
 });
 
-app.post('/create',async function (req, res) {
+app.post('/create', async function (req, res) {
     let email = req.body.email;
     let nickname = req.body.nickname;
     let password = req.body.password;
 
     if (
         !req.body.hasOwnProperty("email") || !req.body.hasOwnProperty("nickname") || !req.body.hasOwnProperty("password") ||
-        !validateEmail(email) || !(nickname.length >= 1 && nickname.length <= 64) || !(password.length >= 5 && password.length <= 64) 
+        !validateEmail(email) || !(nickname.length >= 5 && nickname.length <= 64) || !(password.length >= 5 && password.length <= 64) 
     ) {
         res.status(401);
         res.json({error: "Invalid credentials"});
     } 
     
     else {
-        let emailExists = await doesValueExist("email", email);
-        let nicknameExists = await doesValueExist("nickname", nickname);
+        let emailExists = await getValue("users", "email", email);
+        let nicknameExists = await getValue("users", "nickname", nickname);
 
         if (emailExists === "error" || nicknameExists === "error") {
             res.status(400);
             res.json({error: "Something went wrong"});
         }
 
-        else if (emailExists === "true") {
+        else if (emailExists.length > 0) {
             res.status(401);
             res.json({error: "Account already exists"});
         } 
 
-        else if (nicknameExists === "true") {
+        else if (nicknameExists.length > 0) {
             res.status(401);
             res.json({error: "Nickname already exists"});
         }
 
         else {
-            bcrypt.hash(password, saltRounds, function(err, hash) {
-                if (err) {
-                    console.log(err);
-                    res.status(500);
+            let hashedPassword = await createHashPassword(password);
+
+            if (hashedPassword === "error") {
+                res.status(500);
+                res.json({error: "Something went wrong"});
+            }
+
+            else {
+                let isAccountCreated = await createAccount(email, nickname, hashedPassword);
+
+                if (isAccountCreated === "false") {
+                    res.status(400);
                     res.json({error: "Something went wrong"});
                 }
 
                 else {
-                    let text = `INSERT INTO users(email, nickname, password) VALUES($1, $2, $3) RETURNING *`;
-                    let values = [email, nickname, hash];
-
-                    pool.query(text, values, function(err, data) {
-                        if (err) {
-                            console.log(err.stack);
-                            res.status(400);
-                            res.json({error: "Something went wrong"});
-                        }
-
-                        else {
-                            res.status(200);
-                            res.json({success: "Account created"});
-                        }
-                    });
+                    res.status(200);
+                    res.json({success: "Account created"});
                 }
-            });
+            }
         }
     }
 });
 
-app.get('/history', function (req, res) {
-    let text = `SELECT * FROM kills WHERE user_id = $1`;
-    let values = [req.query.user];
+app.get('/history', async function (req, res) {
+    let killHistory = await getValue("kills", "email", email);
 
-    pool.query(text, values, function (err, data) {
-        if (err) {
-            console.log(err.stack);
-            res.status(400);
-            res.json({error: "Something went wrong"});
-        } 
-        
-        else {
-            res.status(200);
-            res.json({info: data});
-        }
-    });
+    if (killHistory === "error") {
+        res.status(400);
+        res.json({error: "Something went wrong"});
+    }
+
+    else {
+        res.status(200);
+        res.json({info: killHistory});
+    }
 });
 
 app.post('/kill', function (req, res) {
@@ -164,15 +154,16 @@ app.post('/kill', function (req, res) {
 
     if (!req.body.hasOwnProperty("user") ||  !req.body.hasOwnProperty("date") || !req.body.hasOwnProperty("latitude") || 
         !req.body.hasOwnProperty("longitude") || !req.body.hasOwnProperty("name") || !req.body.hasOwnProperty("comments") || 
-        !req.body.hasOwnProperty("image") || !(name.length >= 1 && name.length <= 50) || !(comments.length >= 1 && comments.length <= 300)) 
+        !(name.length >= 1 && name.length <= 60) || !(comments.length >= 1 && comments.length <= 240)) 
     {
         res.status(401);
         res.json({error: "Invalid data, please try again"});
     } 
     
     else {
-        let text = `INSERT INTO kills(user_id, date, loc_lat, loc_lon, nickname, description, image_name) VALUES($1, $2, $3, $4, $5, $6, $7)`;
-        let values = [user, date, latitude, longitude, name, comments, image];
+        let imageExists = true;
+        let text = `INSERT INTO kills (user_id, date, loc_lat, loc_lon, nickname, description, img_exist) VALUES($1, $2, $3, $4, $5, $6, $7)`;
+        let values = [user, date, latitude, longitude, name, comments, imageExists];
 
         pool.query(text, values, function (err, data) {
             if (err) {
@@ -202,19 +193,81 @@ function validateEmail(email) {
     return re.test(String(email).toLowerCase());
 }
 
-async function doesValueExist(category, value) {
-    let text = `SELECT * FROM users WHERE ${category} = $1`;
-    let values = [value];
+async function validateToken(token) {
+    let decoded = jwt.decode(token, secret);
+
+    let hashedPassword = await getPassword(decoded.email);
+    let accountExists = await validatePassword(decoded.password, hashedPassword);
+
+    if (accountExists === "true") {
+        return true;
+    }
+
+    else {
+        return false;
+    }
+}
+
+async function validatePassword(password, hashedPassword) {
     try {
-        const res = await pool.query(text, values);
+        const res = await bcrypt.compare(password, hashedPassword);
         
-        if (res.rows.length > 0) {
+        if (res) {
             return "true";
         }
 
         else {
             return "false";
         }
+
+    } catch (err) {
+        console.log(err.stack);
+        return "error";
+    }
+}
+
+async function createHashPassword(password) {
+    try {
+        const res = await bcrypt.hash(password, saltRounds);
+        
+        return res;
+
+    } catch (err) {
+        console.log(err.stack);
+        return "error";
+    }
+}
+
+async function createAccount(email, nickname, hashedPassword) {
+    let text = `INSERT INTO users(email, nickname, password) VALUES($1, $2, $3) RETURNING *`;
+    let values = [email, nickname, hashedPassword];
+    
+    try {
+        const res = await pool.query(text, values);
+        
+        return "true";
+
+    } catch (err) {
+        console.log(err.stack);
+        return "error";
+    } 
+}
+
+async function getValue(table, category, value) {
+    let text = `SELECT * FROM ${table} WHERE ${category} = $1`;
+    let values = [value];
+
+    try {
+        const res = await pool.query(text, values);
+        
+        if (res.rows.length > 0) {
+            return res.rows;
+        }
+
+        else {
+            return "false";
+        }
+
     } catch (err) {
         console.log(err.stack);
         return "error";
@@ -235,6 +288,7 @@ async function getPassword(email) {
         else {
             return res.rows[0].password;
         }
+
     } catch (err) {
         console.log(err.stack);
         return "error";
