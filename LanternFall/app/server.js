@@ -25,9 +25,11 @@ app.post('/login', async function (req, res) {
     let email = req.body.email;
     let password = req.body.password;
 
+    email = email.toLowerCase();
+
     if (
         !req.body.hasOwnProperty("email") || !req.body.hasOwnProperty("password") ||
-        !validateEmail(email) || !(password.length >= 5 && password.length <= 64)
+        !validateEmail(email) || !(validateString(password)) || !(password.length >= 5 && password.length <= 64)
     ) {
         res.status(401);
         res.json({error: "Invalid credentials"});
@@ -35,19 +37,19 @@ app.post('/login', async function (req, res) {
     
     else {
         let user = await getValue("users", "email", email);
-        let hashedPassword = user[0].password;
 
-        if (hashedPassword === "error") {
+        if (user === "error") {
             res.status(400);
             res.json({error: "Something went wrong"});
         }
 
-        else if (hashedPassword === "false") {
+        else if (user === "false") {
             res.status(401);
             res.json({error: "No account exists"});
         }
 
         else {
+            let hashedPassword = user[0].password;
             let accountExists = await validatePassword(password, hashedPassword);
 
             if (accountExists === "error") {
@@ -76,9 +78,12 @@ app.post('/create', async function (req, res) {
     let username = req.body.username;
     let password = req.body.password;
 
+    email = email.toLowerCase();
+
     if (
         !req.body.hasOwnProperty("email") || !req.body.hasOwnProperty("username") || !req.body.hasOwnProperty("password") ||
-        !validateEmail(email) || !(username.length >= 5 && username.length <= 64) || !(password.length >= 5 && password.length <= 64) 
+        !validateEmail(email) || !(validateString(username)) || !(validateString(password)) || 
+        !(username.length >= 5 && username.length <= 64) || !(password.length >= 5 && password.length <= 64) 
     ) {
         res.status(401);
         res.json({error: "Invalid credentials"});
@@ -112,9 +117,11 @@ app.post('/create', async function (req, res) {
             }
 
             else {
-                let isAccountCreated = await createAccount(email, username, hashedPassword);
+                let text = `INSERT INTO users(email, username, password) VALUES($1, $2, $3) RETURNING *`;
+                let values = [email, username, hashedPassword];
+                let isAccountCreated = await createValue(text, values);
 
-                if (isAccountCreated === "false") {
+                if (isAccountCreated === "error") {
                     res.status(400);
                     res.json({error: "Something went wrong"});
                 }
@@ -130,71 +137,98 @@ app.post('/create', async function (req, res) {
 
 app.get('/history', async function (req, res) {
     let username = req.query.username;
-    let data = await getValue("users", "username", username);
-    let userID = data[0].id;
-    let killHistory = await getValue("kills", "user_id", userID);
 
-    if (killHistory == "error") {
-        res.status(400);
-        res.json({error: "Something went wrong"});
+    if (!(username.length >= 5 && username.length <= 64)) {
+        res.status(401);
+        res.json({error: "Invalid credentials"});
     }
 
     else {
-        res.status(200);
-        res.json({info: killHistory});
+        let data = await getValue("users", "username", username);
+
+        if (data === "error") {
+            res.status(400);
+            res.json({error: "Something went wrong"});
+        }
+        
+        else if (data === "false") {
+            res.status(401);
+            res.json({error: "No account exists"});
+        }
+
+        else {
+            let userID = data[0].id;
+            let killHistory = await getValue("kills", "user_id", userID);
+
+            if (killHistory === "error") {
+                res.status(400);
+                res.json({error: "Something went wrong"});
+            }
+
+            else {
+                res.status(200);
+                res.json({info: killHistory});
+            }
+        }
     }
 });
 
-app.post('/kill', function (req, res) {
-    let user = req.body.user;
+app.post('/kill', async function (req, res) {
+    let token = req.body.token;
     let date = req.body.date;
     let latitude = req.body.latitude;
     let longitude = req.body.longitude;
-    let name = req.body.name;
-    let comments = req.body.comments;
+    let nickname = req.body.nickname;
+    let description = req.body.description;
     let image = req.body.image;
 
-    let text = `SELECT * FROM users WHERE nickname = '${user}'`;
-    pool.query(text, function (err, data) {
-        if (err) {
-            console.log(err.stack);
-            res.status(400);
-            res.json({error: "Something went wrong"});
-        } else {
-            if (data.length === 0) {
-                res.status(401);
-                res.json({error: "Username does not exist"});
-            } else {
-                user = data.nickname;
-                console.log(user);
-            }
-        }
-    });
-
-    if (!req.body.hasOwnProperty("user") ||  !req.body.hasOwnProperty("date") || !req.body.hasOwnProperty("latitude") || 
-        !req.body.hasOwnProperty("longitude") || !req.body.hasOwnProperty("name") || !req.body.hasOwnProperty("comments") || 
-        !(name.length >= 1 && name.length <= 60) || !(comments.length >= 1 && comments.length <= 240)) 
+    if (!req.body.hasOwnProperty("token") || !req.body.hasOwnProperty("date") || !req.body.hasOwnProperty("latitude") || 
+        !req.body.hasOwnProperty("longitude") || !req.body.hasOwnProperty("nickname") || 
+        !req.body.hasOwnProperty("description") || !req.body.hasOwnProperty("image") || 
+        !(validateString(token)) || !(validateString(date)) || !(validateFloat(latitude)) || !(validateFloat(longitude)) ||
+        !(validateString(nickname)) || !(validateString(description)) || !(validateString(image)) || !(validateDate(date)) || 
+        !(latitude >= -90 && latitude <= 90) || !(longitude >= -180 && longitude <= 180) ||
+        !(nickname.length >= 1 && nickname.length <= 60) || !(description.length >= 0 && description.length <= 140) ||
+        !(image === "true" || image === "false"))
     {
         res.status(401);
         res.json({error: "Invalid data, please try again"});
     } 
-    
-    else {
-        let imageExists = true;
-        text = `INSERT INTO kills (user_id, date, loc_lat, loc_lon, nickname, description, img_exist) VALUES($1, $2, $3, $4, $5, $6, $7)`;
-        let values = [user, date, latitude, longitude, name, comments, imageExists];
 
-        pool.query(text, values, function (err, data) {
-            if (err) {
-                console.log(err.stack);
+    else {
+        let user = await getUserFromToken(token);
+
+        if (user === "false") {
+            res.status(401);
+            res.json({error: "Account does not exist"});
+        } 
+
+        else if (user === "error") {
+            res.status(400);
+            res.json({error: "Invalid token"});
+        }
+        
+        else {
+            let id = user.id;
+            let text = `INSERT INTO kills (user_id, date, loc_lat, loc_lon, nickname, description, img_exist) VALUES($1, $2, $3, $4, $5, $6, $7)`;
+            let values = [id, date, latitude, longitude, nickname, description, image];
+            let isKillCreated = await createValue(text, values);
+
+            if (isKillCreated === "error") {
                 res.status(400);
                 res.json({error: "Something went wrong"});
-            } else {
-                res.status(200);
-                res.json({success: "Kill logged"});
             }
-        });
+
+            else {
+                res.status(200);
+                res.json({success: "Kill created"});
+            }
+        } 
     }
+});
+
+app.post('/image', function (req, res) {
+    // TO DO UPLOAD IMAGE
 });
 
 app.post('/settings', function (req, res) {
@@ -212,19 +246,47 @@ function validateEmail(email) {
     return re.test(String(email).toLowerCase());
 }
 
-async function validateToken(token) {
-    let decoded = jwt.decode(token, secret);
+// https://dev.to/uzairsamad/how-to-check-if-number-is-float-in-js-h98
+function validateFloat(n) {
+    return Number(n) === n && n % 1 !== 0;
+}
 
-    let users = await getValue("users", "email", decoded.email);
-    let hashedPassword = users[0].password; 
-    let accountExists = await validatePassword(decoded.password, hashedPassword);
+function validateString(n) {
+    return (typeof n) === "string";
+}
 
-    if (accountExists === "true") {
-        return true;
+// https://www.geeksforgeeks.org/how-to-check-a-date-is-valid-or-not-using-javascript/
+function validateDate(n) {
+    let d = new Date(n);
+
+    if (Object.prototype.toString.call(d) === "[object Date]") {
+        if (isNaN(d.getTime())) { 
+            return false;
+        }
+        else {
+            return true;
+        }
     }
+}
 
-    else {
-        return false;
+async function getUserFromToken(token) {
+    try {
+        let decoded = jwt.decode(token, secret);
+
+        let user = await getValue("users", "email", decoded.email);
+        let hashedPassword = user[0].password; 
+        let accountExists = await validatePassword(decoded.password, hashedPassword);
+
+        if (accountExists === "true") {
+            return user[0];
+        }
+
+        else {
+            return "false";
+        }
+
+    } catch (err) {
+        return "error";
     }
 }
 
@@ -258,10 +320,7 @@ async function createHashPassword(password) {
     }
 }
 
-async function createAccount(email, username, hashedPassword) {
-    let text = `INSERT INTO users(email, username, password) VALUES($1, $2, $3) RETURNING *`;
-    let values = [email, username, hashedPassword];
-    
+async function createValue(text, values) {
     try {
         const res = await pool.query(text, values);
         
