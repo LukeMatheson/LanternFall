@@ -130,9 +130,11 @@ app.post('/create', async function (req, res) {
 
 app.get('/history', async function (req, res) {
     let username = req.query.username;
-    let killHistory = await getValue("kills", "username", username);
+    let data = await getValue("users", "username", username);
+    let userID = data[0].id;
+    let killHistory = await getValue("kills", "user_id", userID);
 
-    if (killHistory === "error") {
+    if (killHistory == "error") {
         res.status(400);
         res.json({error: "Something went wrong"});
     }

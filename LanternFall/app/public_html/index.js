@@ -6,7 +6,7 @@ login.addEventListener("click", function () {
 
     var userEmail = document.getElementById("email").value;
     var userPassword = document.getElementById("pwd").value;
-    var url = `http://localhost:3000/login?email=${userEmail}&password=${userPassword}`
+    var url = `http://localhost:80/login?email=${userEmail}&password=${userPassword}`
 
     const data = { email: userEmail, password: userPassword };
 
@@ -26,6 +26,7 @@ login.addEventListener("click", function () {
         }
         else {
             sessionStorage.setItem("token", data.token);
+            sessionStorage.setItem("username", data.username);
             location.href = "map.html";
         }
     })
