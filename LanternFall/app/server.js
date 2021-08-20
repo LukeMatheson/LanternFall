@@ -5,6 +5,7 @@ const jwt = require("jwt-simple");
 const app = express();
 
 const port = 80;
+const hostname = "localhost";
 
 const saltRounds = 10;
 const secret = "*WaRsiZKrap";
@@ -199,8 +200,8 @@ app.post('/settings', function (req, res) {
     res.send();
 });
 
-app.listen(port, () => {
-    console.log(`Server is listening on port: ${port}`);
+app.listen(port, hostname, () => {
+    console.log(`Listening at: http://${hostname}:${port}`);
 });
 
 // https://stackoverflow.com/questions/46155/how-to-validate-an-email-address-in-javascript
