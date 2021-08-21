@@ -227,6 +227,10 @@ app.post('/kill', async function (req, res) {
     }
 });
 
+app.post(`/image`, async function(req, res) {
+
+});
+
 app.post('/settings', function (req, res) {
     //What settings are we changing here?
     res.send();

@@ -11,9 +11,10 @@ function onclick() {
     try {
         formData = new FormData();
         formData.append("myimage.png", image.files[0]);
+        imageExists = "true";
     } catch (err) {
         console.log(err)
-        formData = "false";
+        imageExists = "false";
     }
     
     let err = document.getElementById("error-msg");
@@ -30,7 +31,7 @@ function onclick() {
         longitude: parseFloat(longitude),
         nickname: nickname,
         description: description,
-        image: formData 
+        image: imageExists 
     };
 
     fetch('/kill', {
