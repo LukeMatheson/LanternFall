@@ -1,11 +1,20 @@
 function onclick() {
-    let username = document.getElementsByName("username")[0].value;
+    let token = sessionStorage.getItem("token");
     let date = document.getElementsByName("date")[0].value;
-    let lat = document.getElementsByName("latitude")[0].value;
-    let long = document.getElementsByName("longitude")[0].value;
-    let name = document.getElementsByName("kill-name")[0].value;
-    let comments = document.getElementById("description").value;
-    let image = document.getElementsByName("image")[0];
+    let latitude = document.getElementsByName("latitude")[0].value;
+    let longitude = document.getElementsByName("longitude")[0].value;
+    let nickname = document.getElementsByName("kill-name")[0].value;
+    let description = document.getElementById("description").value;
+    let image = document.getElementById("image-file");
+
+    let formData = null;
+    try {
+        formData = new FormData();
+        formData.append("myimage.png", image.files[0]);
+    } catch (err) {
+        console.log(err)
+        formData = "false";
+    }
     
     let err = document.getElementById("error-msg");
     let code = 200;
@@ -15,13 +24,13 @@ function onclick() {
     }
 
     let values = {
-        user: username,
+        token: token,
         date: date,
-        latitude: lat,
-        longitude: long,
-        name: name,
-        comments: comments,
-        image: image
+        latitude: parseFloat(latitude),
+        longitude: parseFloat(longitude),
+        nickname: nickname,
+        description: description,
+        image: formData 
     };
 
     fetch('/kill', {

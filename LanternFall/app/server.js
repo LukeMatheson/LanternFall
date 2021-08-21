@@ -83,7 +83,7 @@ app.post('/create', async function (req, res) {
     if (
         !req.body.hasOwnProperty("email") || !req.body.hasOwnProperty("username") || !req.body.hasOwnProperty("password") ||
         !validateEmail(email) || !(validateString(username)) || !(validateString(password)) || 
-        !(username.length >= 5 && username.length <= 64) || !(password.length >= 5 && password.length <= 64) 
+        !(username.length >= 5 && username.length <= 64) || (username.includes(" ")) || !(password.length >= 5 && password.length <= 64) 
     ) {
         res.status(401);
         res.json({error: "Invalid credentials"});
@@ -119,7 +119,7 @@ app.post('/create', async function (req, res) {
             else {
                 let text = `INSERT INTO users(email, username, password) VALUES($1, $2, $3) RETURNING *`;
                 let values = [email, username, hashedPassword];
-                let isAccountCreated = await createValue(text, values);
+                let isAccountCreated = await psqlCommand(text, values);
 
                 if (isAccountCreated === "error") {
                     res.status(400);
@@ -185,7 +185,7 @@ app.post('/kill', async function (req, res) {
     if (!req.body.hasOwnProperty("token") || !req.body.hasOwnProperty("date") || !req.body.hasOwnProperty("latitude") || 
         !req.body.hasOwnProperty("longitude") || !req.body.hasOwnProperty("nickname") || 
         !req.body.hasOwnProperty("description") || !req.body.hasOwnProperty("image") || 
-        !(validateString(token)) || !(validateString(date)) || !(validateFloat(latitude)) || !(validateFloat(longitude)) ||
+        !(validateString(token)) || !(validateString(date)) || !(validateNumber(latitude)) || !(validateNumber(longitude)) ||
         !(validateString(nickname)) || !(validateString(description)) || !(validateString(image)) || !(validateDate(date)) || 
         !(latitude >= -90 && latitude <= 90) || !(longitude >= -180 && longitude <= 180) ||
         !(nickname.length >= 1 && nickname.length <= 60) || !(description.length >= 0 && description.length <= 140) ||
@@ -210,9 +210,9 @@ app.post('/kill', async function (req, res) {
         
         else {
             let id = user.id;
-            let text = `INSERT INTO kills (user_id, date, loc_lat, loc_lon, nickname, description, img_exist) VALUES($1, $2, $3, $4, $5, $6, $7)`;
+            let text = `INSERT INTO kills (user_id, date, loc_lat, loc_lon, nickname, description, img_exist) VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING *`;
             let values = [id, date, latitude, longitude, nickname, description, image];
-            let isKillCreated = await createValue(text, values);
+            let isKillCreated = await psqlCommand(text, values);
 
             if (isKillCreated === "error") {
                 res.status(400);
@@ -225,10 +225,6 @@ app.post('/kill', async function (req, res) {
             }
         } 
     }
-});
-
-app.post('/image', function (req, res) {
-    // TO DO UPLOAD IMAGE
 });
 
 app.post('/settings', function (req, res) {
@@ -247,8 +243,8 @@ function validateEmail(email) {
 }
 
 // https://dev.to/uzairsamad/how-to-check-if-number-is-float-in-js-h98
-function validateFloat(n) {
-    return Number(n) === n && n % 1 !== 0;
+function validateNumber(n) {
+    return (typeof n) === "number"
 }
 
 function validateString(n) {
@@ -320,11 +316,11 @@ async function createHashPassword(password) {
     }
 }
 
-async function createValue(text, values) {
+async function psqlCommand(text, values) {
     try {
         const res = await pool.query(text, values);
         
-        return "true";
+        return res.rows;
 
     } catch (err) {
         console.log(err.stack);
