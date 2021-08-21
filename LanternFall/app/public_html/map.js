@@ -2,9 +2,8 @@
 if (sessionStorage.getItem("username") != null) {
 
   let username = sessionStorage.getItem("username");
-  let url = `http://localhost:80/history?username=${username}`;
 
-  fetch(url).then(function (response) {
+  fetch(`/history?username=${username}`).then(function (response) {
     return response.json();
   }).then(function (data) {
 
