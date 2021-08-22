@@ -1,64 +1,63 @@
+ let token = sessionStorage.getItem("token");
+ let date = document.getElementById("date");
+ let latitude = document.getElementById("latitude");
+ let longitude = document.getElementById("longitude");
+ let nickname = document.getElementById("kill-name");
+ let description = document.getElementById("description");
+ let image = document.getElementById("image-file");
+ let message = document.getElementById("message");
+
 function onclick() {
+    /*
     let token = sessionStorage.getItem("token");
-    let date = document.getElementsByName("date")[0].value;
-    let latitude = document.getElementsByName("latitude")[0].value;
-    let longitude = document.getElementsByName("longitude")[0].value;
-    let nickname = document.getElementsByName("kill-name")[0].value;
+    let date = document.getElementById("date")[0].value;
+    let latitude = document.getElementById("latitude")[0].value;
+    let longitude = document.getElementById("longitude")[0].value;
+    let nickname = document.getElementById("kill-name")[0].value;
     let description = document.getElementById("description").value;
     let image = document.getElementById("image-file");
+    let message = document.getElementById("message");
+    */
+    message.textContent = "";
 
-    let formData = null;
-    try {
-        formData = new FormData();
-        formData.append("myimage.png", image.files[0]);
+    let formData = new FormData();
+    let imageExists = "false";
+
+    if (image.value != "") {
+        formData.append(image.files[0].name, image.files[0]);
         imageExists = "true";
-    } catch (err) {
-        console.log(err)
-        imageExists = "false";
-    }
-    
-    let err = document.getElementById("error-msg");
-    let code = 200;
-
-    while (err.firstChild) {
-        err.remove(err.firstChild);
     }
 
     let values = {
         token: token,
-        date: date,
-        latitude: parseFloat(latitude),
-        longitude: parseFloat(longitude),
-        nickname: nickname,
-        description: description,
+        date: date.value,
+        latitude: parseFloat(latitude.value),
+        longitude: parseFloat(longitude.value),
+        nickname: nickname.value,
+        description: description.value,
         image: imageExists 
     };
+    
+    formData.append("user", JSON.stringify(values)); 
 
-    fetch('/kill', {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify(values),
-    }).then(function (response) {
-        code = response.status;
-        return response.json();
-    }).then(function (data) {
-        if (code === 200) {
-            let div = document.createElement("div");
-            div.textContent = data.success;
-            err.append(div);
+    fetch("/kill", {
+		method: "POST",
+		body: formData
+	}).then(async function (response) {
+        if (response.status === 200) {
+            await response.json().then(function (data) {
+                message.textContent = data.success;
+            });
         } else {
-            let div = document.createElement("div");
-            div.textContent = data.error;
-            err.append(div);
+            await response.json().then(function (error) {
+                message.textContent = error.error;
+            });
         }
-    }).catch(function (error) {
-        console.log(error);
-        let div = document.createElement("div");
-        div.textContent = "Something went wrong";
-        err.append(div);
     })
+	.catch(function (error) {
+		console.log(error);
+        message.textContent = "Something went wrong";
+	});
 }
 
 let button = document.getElementById("kill-button");

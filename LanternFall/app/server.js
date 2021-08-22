@@ -1,6 +1,7 @@
 const pg = require("pg");
 const bcrypt = require("bcrypt");
 const express = require("express");
+const formidable = require("express-formidable");
 const jwt = require("jwt-simple");
 const app = express();
 
@@ -20,6 +21,7 @@ pool.connect().then(function () {
 
 app.use(express.static("public_html"));
 app.use(express.json());
+app.use(formidable());
 
 app.post('/login', async function (req, res) {
     let email = req.body.email;
@@ -173,6 +175,7 @@ app.get('/history', async function (req, res) {
     }
 });
 
+/*
 app.post('/kill', async function (req, res) {
     let token = req.body.token;
     let date = req.body.date;
@@ -226,12 +229,31 @@ app.post('/kill', async function (req, res) {
         } 
     }
 });
+*/
+
+app.post('/kill', async function (req, res) {
+    let fields = req.fields;
+    let files = req.files;
+
+    console.log(fields);
+    console.log(files);
+});
 
 app.post(`/image`, async function(req, res) {
 
 });
 
-app.post('/settings', function (req, res) {
+app.post('/changeUsername', function (req, res) {
+    //What settings are we changing here?
+    res.send();
+});
+
+app.post('/deletePost', function (req, res) {
+    //What settings are we changing here?
+    res.send();
+});
+
+app.post('/deleteAccount', function (req, res) {
     //What settings are we changing here?
     res.send();
 });
