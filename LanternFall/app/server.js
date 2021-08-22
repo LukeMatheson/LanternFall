@@ -271,9 +271,9 @@ app.post('/kill', async function (req, res) {
                             else {
                                 let text = `INSERT INTO images (kill_id, imgname, img) VALUES ($1, $2, $3) RETURNING *`;
                                 let values = [killCreated[0].id, photo.name, photo];
-                                let isImageUploaded = await psqlCommand(text, values);
+                                let imageUploaded = await psqlCommand(text, values);
 
-                                if (isImageUploaded === "error") {
+                                if (imageUploaded === "error") {
                                     res.status(401);
                                     res.json({error: "Something went wrong"});
                                 }
