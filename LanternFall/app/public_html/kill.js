@@ -8,23 +8,13 @@
  let message = document.getElementById("message");
 
 function onclick() {
-    /*
-    let token = sessionStorage.getItem("token");
-    let date = document.getElementById("date")[0].value;
-    let latitude = document.getElementById("latitude")[0].value;
-    let longitude = document.getElementById("longitude")[0].value;
-    let nickname = document.getElementById("kill-name")[0].value;
-    let description = document.getElementById("description").value;
-    let image = document.getElementById("image-file");
-    let message = document.getElementById("message");
-    */
     message.textContent = "";
 
     let formData = new FormData();
     let imageExists = "false";
 
     if (image.value != "") {
-        formData.append(image.files[0].name, image.files[0]);
+        formData.append("photo", image.files[0]);
         imageExists = "true";
     }
 

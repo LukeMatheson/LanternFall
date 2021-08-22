@@ -1,7 +1,7 @@
 const pg = require("pg");
 const bcrypt = require("bcrypt");
 const express = require("express");
-const formidable = require("express-formidable");
+const formidable = require("formidable");
 const jwt = require("jwt-simple");
 const app = express();
 
@@ -21,7 +21,6 @@ pool.connect().then(function () {
 
 app.use(express.static("public_html"));
 app.use(express.json());
-app.use(formidable());
 
 app.post('/login', async function (req, res) {
     let email = req.body.email;
@@ -121,9 +120,9 @@ app.post('/create', async function (req, res) {
             else {
                 let text = `INSERT INTO users(email, username, password) VALUES($1, $2, $3) RETURNING *`;
                 let values = [email, username, hashedPassword];
-                let isAccountCreated = await psqlCommand(text, values);
+                let accountCreated = await psqlCommand(text, values);
 
-                if (isAccountCreated === "error") {
+                if (accountCreated === "error") {
                     res.status(400);
                     res.json({error: "Something went wrong"});
                 }
@@ -175,72 +174,126 @@ app.get('/history', async function (req, res) {
     }
 });
 
-/*
-app.post('/kill', async function (req, res) {
-    let token = req.body.token;
-    let date = req.body.date;
-    let latitude = req.body.latitude;
-    let longitude = req.body.longitude;
-    let nickname = req.body.nickname;
-    let description = req.body.description;
-    let image = req.body.image;
+app.get(`/image`, async function(req, res) {
+    let id = req.query.id;
 
-    if (!req.body.hasOwnProperty("token") || !req.body.hasOwnProperty("date") || !req.body.hasOwnProperty("latitude") || 
-        !req.body.hasOwnProperty("longitude") || !req.body.hasOwnProperty("nickname") || 
-        !req.body.hasOwnProperty("description") || !req.body.hasOwnProperty("image") || 
-        !(validateString(token)) || !(validateString(date)) || !(validateNumber(latitude)) || !(validateNumber(longitude)) ||
-        !(validateString(nickname)) || !(validateString(description)) || !(validateString(image)) || !(validateDate(date)) || 
-        !(latitude >= -90 && latitude <= 90) || !(longitude >= -180 && longitude <= 180) ||
-        !(nickname.length >= 1 && nickname.length <= 60) || !(description.length >= 0 && description.length <= 140) ||
-        !(image === "true" || image === "false"))
-    {
+    let data = await getValue("images", "kill_id", id);
+    
+    if (data === "error") {
+        res.status(400);
+        res.json({error: "Something went wrong"});
+    }
+    
+    else if (data === "false") {
         res.status(401);
-        res.json({error: "Invalid data, please try again"});
-    } 
+        res.json({error: "No image exists"});
+    }
 
     else {
-        let user = await getUserFromToken(token);
-
-        if (user === "false") {
-            res.status(401);
-            res.json({error: "Account does not exist"});
-        } 
-
-        else if (user === "error") {
-            res.status(400);
-            res.json({error: "Invalid token"});
-        }
-        
-        else {
-            let id = user.id;
-            let text = `INSERT INTO kills (user_id, date, loc_lat, loc_lon, nickname, description, img_exist) VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING *`;
-            let values = [id, date, latitude, longitude, nickname, description, image];
-            let isKillCreated = await psqlCommand(text, values);
-
-            if (isKillCreated === "error") {
-                res.status(400);
-                res.json({error: "Something went wrong"});
-            }
-
-            else {
-                res.status(200);
-                res.json({success: "Kill created"});
-            }
-        } 
+        console.log(data[0].img);
+        res.status(200);
+        res.json({success: "Image works"});
     }
 });
-*/
 
 app.post('/kill', async function (req, res) {
-    let fields = req.fields;
-    let files = req.files;
+    new formidable.IncomingForm().parse(req, async (err, fields, files) => 
+    {
+        if (err) {
+            console.log(err);
+            res.status(400);
+            res.json({error: "Something went wrong"});
+        }
 
-    console.log(fields);
-    console.log(files);
-});
+        else {
+            let killInfo = JSON.parse(fields.user);
+            let photo = files.photo;
 
-app.post(`/image`, async function(req, res) {
+            let token = killInfo.token;
+            let date = killInfo.date;
+            let latitude = killInfo.latitude;
+            let longitude = killInfo.longitude;
+            let nickname = killInfo.nickname;
+            let description = killInfo.description;
+            let imageExists = killInfo.image;
 
+            if (!killInfo.hasOwnProperty("token") || !killInfo.hasOwnProperty("date") || !killInfo.hasOwnProperty("latitude") || 
+                !killInfo.hasOwnProperty("longitude") || !killInfo.hasOwnProperty("nickname") || 
+                !killInfo.hasOwnProperty("description") || !killInfo.hasOwnProperty("image") || 
+                !(validateString(token)) || !(validateString(date)) || !(validateNumber(latitude)) || !(validateNumber(longitude)) ||
+                !(validateString(nickname)) || !(validateString(description)) || !(validateString(imageExists)) || !(validateDate(date)) || 
+                !(latitude >= -90 && latitude <= 90) || !(longitude >= -180 && longitude <= 180) ||
+                !(nickname.length >= 1 && nickname.length <= 60) || !(description.length >= 0 && description.length <= 140) ||
+                !(imageExists === "true" || imageExists === "false"))
+            {
+                res.status(401);
+                res.json({error: "Invalid data, please try again"});
+            } 
+
+            else {
+                let user = await getUserFromToken(token);
+
+                if (user === "false") {
+                    res.status(401);
+                    res.json({error: "Account does not exist"});
+                } 
+
+                else if (user === "error") {
+                    res.status(400);
+                    res.json({error: "Invalid token"});
+                }
+                
+                else {
+                    let id = user.id;
+                    let text = `INSERT INTO kills (user_id, date, loc_lat, loc_lon, nickname, description, img_exist) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *`;
+                    let values = [id, date, latitude, longitude, nickname, description, imageExists];
+                    let killCreated = await psqlCommand(text, values);
+
+                    if (killCreated === "error") {
+                        res.status(400);
+                        res.json({error: "Something went wrong"});
+                    }
+
+                    else {
+                        if (imageExists === "true") {
+                            const imageType = /image.*/
+
+                            if (!photo.type.match(imageType)) {
+                                res.status(400);
+                                res.json({error: "Not an image"});
+                            }
+
+                            else if (photo.size > 2000*1024) {
+                                res.status(401);
+                                res.json({error: "Image too big"});
+                            }
+                            
+                            else {
+                                let text = `INSERT INTO images (kill_id, imgname, img) VALUES ($1, $2, $3) RETURNING *`;
+                                let values = [killCreated[0].id, photo.name, photo];
+                                let isImageUploaded = await psqlCommand(text, values);
+
+                                if (isImageUploaded === "error") {
+                                    res.status(401);
+                                    res.json({error: "Something went wrong"});
+                                }
+
+                                else {
+                                    res.status(200);
+                                    res.json({success: "Kill created"});
+                                }
+                            }
+                        }
+
+                        else {
+                            res.status(200);
+                            res.json({success: "Kill created"});
+                        }
+                    }
+                } 
+            }
+        }
+    });
 });
 
 app.post('/changeUsername', function (req, res) {
@@ -259,7 +312,7 @@ app.post('/deleteAccount', function (req, res) {
 });
 
 app.listen(port, hostname, () => {
-    console.log(`Listening at: http://${hostname}:${port}`);
+    console.log(`Server running on port ${port}`);
 });
 
 // https://stackoverflow.com/questions/46155/how-to-validate-an-email-address-in-javascript
@@ -268,7 +321,6 @@ function validateEmail(email) {
     return re.test(String(email).toLowerCase());
 }
 
-// https://dev.to/uzairsamad/how-to-check-if-number-is-float-in-js-h98
 function validateNumber(n) {
     return (typeof n) === "number"
 }
