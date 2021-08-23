@@ -1,10 +1,15 @@
 let user = sessionStorage.getItem("username");
 let code = 200;
 let err = document.getElementById("error-msg");
+let body = document.getElementById("body");
 let date, kill, lat, long, desc;
 
 while (err.firstChild) {
-    err.remove(err.firstChild);
+    err.removeChild(err.firstChild);
+}
+
+while (body.firstChild) {
+    body.removeChild(body.firstChild);
 }
 
 fetch(`/history?username=${user}`).then(function (response) {
@@ -12,12 +17,12 @@ fetch(`/history?username=${user}`).then(function (response) {
     return response.json();
 }).then(function (data) {
     if (code === 200) {
-        for (let i = 0; i < data.info.date.length; i++) {
-            date = data.info.date[i];
-            kill = data.info.nickname[i];
-            lat = data.info.loc_lat[i];
-            long = data.info.loc_lon[i];
-            desc = data.info.description[i];
+        for (let i = 0; i < data.info[i].date; i++) {
+            date = data.info[i].date;
+            kill = data.info[i].nickname;
+            lat = data.info[i].loc_lat;
+            long = data.info[i].loc_lon;
+            desc = data.info[i].description;
 
             let tr = document.createElement("tr");
 
@@ -46,7 +51,7 @@ fetch(`/history?username=${user}`).then(function (response) {
             td.classList.add("cell");
             tr.append(td);
 
-            document.getElementById("profile-table").append(tr);
+            body.append(tr);
         }
     } else {
         console.log(data.error);

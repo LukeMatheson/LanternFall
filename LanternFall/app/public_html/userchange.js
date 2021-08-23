@@ -5,7 +5,7 @@ function onclick() {
     let code = 200;
 
     while (err.firstChild) {
-        err.remove(err.firstChild);
+        err.removeChild(err.firstChild);
     }
 
     let values = {
@@ -37,4 +37,7 @@ function onclick() {
 let button = document.getElementById("submit-button");
 button.addEventListener("click", onclick);
 
-//NOTES: Should perform a query call in the server.js file, return a json body with the element success if successful or error if it is not.
+let returnButton = document.getElementById("return-button");
+returnButton.addEventListener("click", function() {
+    location.href = "/settings.html";
+});

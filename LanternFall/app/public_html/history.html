@@ -11,7 +11,11 @@
                 border: 1px solid black;
                 padding: 10px;
                 font-weight: bold;
-                border-collapse: collapse;
+            }
+
+            .cell {
+                border: 1px solid black;
+                padding: 10px;
             }
         </style>
     </head>
@@ -30,13 +34,15 @@
         <br>
 
         <table id="history-table">
-            <tr>
+            <thead>
                 <td class="head-cell">Date</td>
                 <td class="head-cell">Kill Name</td>
                 <td class="head-cell">Latitude</td>
                 <td class="head-cell">Longitude</td>
                 <td class="head-cell">Description</td>
-            </tr>
+            </thead>
+
+            <tbody id="body"></tbody>
         </table>
 
         <script src="history.js"></script>

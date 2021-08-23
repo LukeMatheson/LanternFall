@@ -1,18 +1,15 @@
 function onclick() {
     let username = document.getElementsByName("user-search")[0].value;
     let code = 200;
-    let values = {
-        date: [],
-        name: [],
-        lat: [],
-        long: [],
-        desc: []
-    };
     let err = document.getElementById("error-msg");
-    let date, kill, lat, long, desc;
+    let body = document.getElementById("body");
 
     while (err.firstChild) {
-        err.remove(err.firstChild);
+        err.removeChild(err.firstChild);
+    }
+
+    while (body.firstChild) {
+        body.removeChild(body.firstChild);
     }
 
     fetch(`/history?username=${username}`).then(function (response) {
@@ -20,12 +17,12 @@ function onclick() {
         return response.json();
     }).then(function (data) {
         if (code === 200) {
-            for (let i = 0; i < data.info.date.length; i++) {
-                date = data.info.date[i];
-                kill = data.info.nickname[i];
-                lat = data.info.loc_lat[i];
-                long = data.info.loc_lon[i];
-                desc = data.info.description[i];
+            for (let i = 0; i < data.info.length; i++) {
+                let date = data.info[i].date;
+                let kill = data.info[i].nickname;
+                let lat = data.info[i].loc_lat;
+                let long = data.info[i].loc_lon; 
+                let desc = data.info[i].description;
     
                 let tr = document.createElement("tr");
     
@@ -54,7 +51,7 @@ function onclick() {
                 td.classList.add("cell");
                 tr.append(td);
     
-                document.getElementById("profile-table").append(tr);
+                body.append(tr);
             }
         } else {
             console.log(data.error);
