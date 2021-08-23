@@ -18,9 +18,11 @@ const pool = new Pool(env);
 
 let totalKills = getTotalKills();
 let topRecentKills = getRecentKills();
+let leaderboard = getLeaderboard();
 
 let totalKillsTimer = setInterval(getTotalKills, 1000 * 600);
 let recentKillsTimer = setInterval(getRecentKills, 1000 * 600);
+let leaderboardTimer = setInterval(getLeaderboard, 1000 * 3600);
 
 pool.connect().then(function () {
     console.log(`Connected to database ${env.database}`);
@@ -182,28 +184,35 @@ app.get('/history', async function (req, res) {
 });
 
 app.get(`/image`, async function(req, res) {
-    let kill_id = req.query.id;
+    let kill_id = req.query.kill;
 
-    let data = await getValue("images", "kill_id", kill_id);
-    
-    if (data === "error") {
-        res.status(400);
-        res.json({error: "Something went wrong"});
-    }
-    
-    else if (data === "false") {
+    if (!(req.query.hasOwnProperty("kill")) || !(validateString(kill_id))) {
         res.status(401);
-        res.json({error: "No image exists"});
+        res.json({error: "Invalid credentials"});
     }
 
     else {
-        let img = Buffer.from(data[0].img, 'base64');
+        let data = await getValue("images", "kill_id", kill_id);
+        
+        if (data === "error") {
+            res.status(400);
+            res.json({error: "Something went wrong"});
+        }
+        
+        else if (data === "false") {
+            res.status(401);
+            res.json({error: "No image exists"});
+        }
 
-        res.writeHead(200, {
-            'Content-Type': 'image/png',
-            'Content-Length': img.length
-        });
-        res.end(img);
+        else {
+            let img = Buffer.from(data[0].img, 'base64');
+
+            res.writeHead(200, {
+                'Content-Type': 'image/png',
+                'Content-Length': img.length
+            });
+            res.end(img);
+        }
     }
 });
 
@@ -256,6 +265,14 @@ app.post('/kill', upload.single('photo'), async function (req, res) {
             }
 
             else {
+                let text = `UPDATE users SET total_kills = total_kills + 1 WHERE id = $1`;
+                let values = [user.id];
+                let incrementKills = await psqlCommand(text, values);
+
+                if (incrementKills === "error") {
+                    console.log(`incrementKills did not work for ${user.id}`)
+                }
+
                 if (imageExists === "true") {
                     let photoInfo = req.file;
                     let photo = req.file.buffer;
@@ -501,6 +518,11 @@ app.post('/deleteAccount', async function (req, res) {
     }
 });
 
+app.get('/leaderboard', async function (req, res) {
+    res.status(200); 
+    res.json({info: leaderboard});
+});
+
 app.get('/totalKills', async function (req, res) {
     res.status(200); 
     res.json({info: totalKills});
@@ -540,6 +562,21 @@ function validateDate(n) {
         else {
             return true;
         }
+    }
+}
+
+async function getLeaderboard() {
+    let text = `SELECT * FROM users ORDER BY total_kills DESC LIMIT 10`;
+    let values = [];
+
+    let leaderboardList = await psqlCommand(text, values);
+
+    if (leaderboardList === "error") {
+        console.log("getLeaderboard() error"); 
+    }
+
+    else {
+        leaderboard = leaderboardList;
     }
 }
 
