@@ -16,6 +16,12 @@ const env = require("../env.json");
 const Pool = pg.Pool;
 const pool = new Pool(env);
 
+let totalKills = getTotalKills();
+let topRecentKills = getRecentKills();
+
+let totalKillsTimer = setInterval(getTotalKills, 1000 * 600);
+let recentKillsTimer = setInterval(getRecentKills, 1000 * 600);
+
 pool.connect().then(function () {
     console.log(`Connected to database ${env.database}`);
 });
@@ -140,7 +146,7 @@ app.post('/create', async function (req, res) {
 app.get('/history', async function (req, res) {
     let username = req.query.username;
 
-    if (!(username.length >= 5 && username.length <= 64)) {
+    if (!(req.query.hasOwnProperty("username")) || !(username.length >= 5 && username.length <= 64)) {
         res.status(401);
         res.json({error: "Invalid credentials"});
     }
@@ -291,19 +297,218 @@ app.post('/kill', upload.single('photo'), async function (req, res) {
     }
 });
 
-app.post('/changeUsername', function (req, res) {
-    //What settings are we changing here?
-    res.send();
+app.post('/changeUsername', async function (req, res) {
+    let token = req.body.token;
+    let newUsername = req.body.username;
+
+    if (!(req.body.hasOwnProperty("token")) || !(validateString(token)) || 
+        !(req.body.hasOwnProperty("username")) || !(validateString(newUsername)))  
+    {
+        res.status(401);
+        res.json({error: "Invalid data, please try again"});
+    } 
+
+    else {
+        let user = await getUserFromToken(token);
+
+        if (user === "false") {
+            res.status(401);
+            res.json({error: "Account does not exist"});
+        } 
+
+        else if (user === "error") {
+            res.status(400);
+            res.json({error: "Invalid token"});
+        }
+        
+        else {
+            let usernameExists = await getValue("users", "username", newUsername);
+
+            if (usernameExists === "error") {
+                res.status(400);
+                res.json({error: "Something went wrong"});
+            }
+
+            else if (usernameExists !== "false") {
+                res.status(401);
+                res.json({error: "Username already exists"});
+            }
+
+            else {
+                let id = user.id;
+                let text = `UPDATE users SET username = $1 WHERE id = $2`;
+                let values = [newUsername, id];
+                let killCreated = await psqlCommand(text, values);
+
+                if (killCreated === "error") {
+                    res.status(400);
+                    res.json({error: "Something went wrong"});
+                }
+
+                else {
+                    res.status(200);
+                    res.json({success: "Username changed"});
+                }
+            }
+        } 
+    }
 });
 
-app.post('/deletePost', function (req, res) {
-    //What settings are we changing here?
-    res.send();
+app.post('/deletePost', async function (req, res) {
+    let token = req.body.token;
+    let kill_id = req.body.kill;
+
+    if (!(req.body.hasOwnProperty("token")) || !(validateString(token)) || 
+        !(req.body.hasOwnProperty("kill")) || !(validateNumber(kill_id)))  
+    {
+        res.status(401);
+        res.json({error: "Invalid data, please try again"});
+    } 
+
+    else {
+        let user = await getUserFromToken(token);
+
+        if (user === "false") {
+            res.status(401);
+            res.json({error: "Account does not exist"});
+        } 
+
+        else if (user === "error") {
+            res.status(400);
+            res.json({error: "Invalid token"});
+        }
+        
+        else {
+            let userKills = await getValue("kills", "user_id", user.id);
+
+            if (userKills === "error") {
+                res.status(400);
+                res.json({error: "Something went wrong"});
+            }
+
+            else if (userKills === "false") {
+                res.status(401);
+                res.json({error: "No kills from user"});
+            }
+
+            else {
+                for (let x = 0; x < userKills.length; x++) {
+                    if (userKills[x].id === kill_id) {
+                        if (userKills[x].img_exist) {
+                            let text = `DELETE FROM images WHERE kill_id = $1`;
+                            let values = [kill_id];
+                            let imageDeleted = await psqlCommand(text, values);
+
+                            if (imageDeleted === "error") {
+                                console.log(`Image not deleted at kill ${kill_id}`)
+                            }
+                        }
+
+                        let text = `DELETE FROM kills WHERE id = $1`;
+                        let values = [kill_id];
+                        let killDeleted = await psqlCommand(text, values);
+
+                        if (killDeleted === "error") {
+                            res.status(400);
+                            return res.json({error: "Something went wrong"});
+                        }
+
+                        else {
+                            res.status(200);
+                            return res.json({success: "Kill deleted"});
+                        }
+                    }
+                }
+
+                res.status(401);
+                res.json({error: "Kill does not belong to user"});
+            }
+        } 
+    }
 });
 
-app.post('/deleteAccount', function (req, res) {
-    //What settings are we changing here?
-    res.send();
+app.post('/deleteAccount', async function (req, res) {
+    let token = req.body.token;
+
+    if (!(req.body.hasOwnProperty("token")) || !(validateString(token)))
+    {
+        res.status(401);
+        res.json({error: "Invalid data, please try again"});
+    } 
+
+    else {
+        let user = await getUserFromToken(token);
+
+        if (user === "false") {
+            res.status(401);
+            res.json({error: "Account does not exist"});
+        } 
+
+        else if (user === "error") {
+            res.status(400);
+            res.json({error: "Invalid token"});
+        }
+        
+        else {
+            let userKills = await getValue("kills", "user_id", user.id);
+
+            if (userKills === "error") {
+                res.status(400);
+                res.json({error: "Something went wrong"});
+            }
+
+            else if (userKills === "false") {
+                res.status(401);
+                res.json({error: "No kills from user"});
+            }
+
+            else {
+                for (let x = 0; x < userKills.length; x++) {
+                    if (userKills[x].img_exist) {
+                        let text = `DELETE FROM images WHERE kill_id = $1`;
+                        let values = [userKills[x].id];
+                        let imageDeleted = await psqlCommand(text, values);
+
+                        if (imageDeleted === "error") {
+                            console.log(`Image not deleted at kill ${userKills[x].id}`)
+                        }
+                    }
+                }
+
+                let text = `DELETE FROM kills WHERE user_id = $1`;
+                let values = [user.id];
+                let killDeleted = await psqlCommand(text, values);
+
+                if (killDeleted === "error") {
+                    console.log(`Kills not deleted for user ${user.id}`)
+                }
+
+                text = `DELETE FROM users WHERE id = $1`;
+                values = [user.id];
+                let userDeleted = await psqlCommand(text, values);
+
+                if (userDeleted === "error") {
+                    res.status(400);
+                    res.json({error: "Something went wrong"});
+                }
+
+                else {
+                    res.status(200);
+                    return res.json({success: "User deleted"});
+                }
+            }
+        } 
+    }
+});
+
+app.get('/totalKills', async function (req, res) {
+    res.status(200); 
+    res.json({info: totalKills});
+});
+
+app.get('/topRecentKills', function (req, res) {
+    res.status(200); 
+    res.json({info: topRecentKills});
 });
 
 app.listen(port, hostname, () => {
@@ -317,7 +522,7 @@ function validateEmail(email) {
 }
 
 function validateNumber(n) {
-    return (typeof n) === "number"
+    return (typeof n) === "number";
 }
 
 function validateString(n) {
@@ -338,22 +543,58 @@ function validateDate(n) {
     }
 }
 
+async function getTotalKills() {
+    let text = `SELECT reltuples AS estimate FROM pg_class WHERE relname = 'kills'`;
+    let values = [];
+
+    let killLength = await psqlCommand(text, values);
+
+    if (killLength === "error") {
+        console.log("getTotalKill error"); 
+    }
+
+    else {
+        totalKills = killLength[0].estimate;
+    }
+}
+
+async function getRecentKills() {
+    let text = `SELECT * FROM kills ORDER BY id DESC LIMIT 10`;
+    let values = [];
+
+    let killList = await psqlCommand(text, values);
+
+    if (killList === "error") {
+        console.log("getRecentKill error"); 
+    }
+
+    else {
+        topRecentKills = killList;
+    }
+}
+
 async function getUserFromToken(token) {
     try {
         let decoded = jwt.decode(token, secret);
 
         let user = await getValue("users", "email", decoded.email);
-        let hashedPassword = user[0].password; 
-        let accountExists = await validatePassword(decoded.password, hashedPassword);
 
-        if (accountExists === "true") {
-            return user[0];
-        }
-
-        else {
+        if (user === "false") {
             return "false";
         }
 
+        else {
+            let hashedPassword = user[0].password; 
+            let accountExists = await validatePassword(decoded.password, hashedPassword);
+
+            if (accountExists === "true") {
+                return user[0];
+            }
+
+            else {
+                return "false";
+            }
+        }
     } catch (err) {
         return "error";
     }

@@ -12,7 +12,7 @@ function onclick() {
     if (password === confirm) {
         let values = {
             email: email,
-            nickname: username,
+            username: username,
             password: password
         }
         let code = 200;
