@@ -1,9 +1,10 @@
 const pg = require("pg");
 const bcrypt = require("bcrypt");
 const express = require("express");
-const formidable = require("formidable");
+const multer = require("multer");
 const jwt = require("jwt-simple");
 const app = express();
+const upload = multer({dest: 'uploads/', storage: multer.memoryStorage()});
 
 const port = 80;
 const hostname = "localhost";
@@ -175,9 +176,9 @@ app.get('/history', async function (req, res) {
 });
 
 app.get(`/image`, async function(req, res) {
-    let id = req.query.id;
+    let kill_id = req.query.id;
 
-    let data = await getValue("images", "kill_id", id);
+    let data = await getValue("images", "kill_id", kill_id);
     
     if (data === "error") {
         res.status(400);
@@ -190,99 +191,88 @@ app.get(`/image`, async function(req, res) {
     }
 
     else {
-        console.log(data[0].img);
-        res.status(200);
-        res.json({success: "Image works"});
+        let img = Buffer.from(data[0].img, 'base64');
+
+        res.writeHead(200, {
+            'Content-Type': 'image/png',
+            'Content-Length': img.length
+        });
+        res.end(img);
     }
 });
 
-app.post('/kill', async function (req, res) {
-    new formidable.IncomingForm().parse(req, async (err, fields, files) => 
+app.post('/kill', upload.single('photo'), async function (req, res) {
+    let killInfo = JSON.parse(req.body.user);
+
+    let token = killInfo.token;
+    let date = killInfo.date;
+    let latitude = killInfo.latitude;
+    let longitude = killInfo.longitude;
+    let nickname = killInfo.nickname;
+    let description = killInfo.description;
+    let imageExists = killInfo.image;
+
+    if (!killInfo.hasOwnProperty("token") || !killInfo.hasOwnProperty("date") || !killInfo.hasOwnProperty("latitude") || 
+        !killInfo.hasOwnProperty("longitude") || !killInfo.hasOwnProperty("nickname") || 
+        !killInfo.hasOwnProperty("description") || !killInfo.hasOwnProperty("image") || 
+        !(validateString(token)) || !(validateString(date)) || !(validateNumber(latitude)) || !(validateNumber(longitude)) ||
+        !(validateString(nickname)) || !(validateString(description)) || !(validateString(imageExists)) || !(validateDate(date)) || 
+        !(latitude >= -90 && latitude <= 90) || !(longitude >= -180 && longitude <= 180) ||
+        !(nickname.length >= 1 && nickname.length <= 60) || !(description.length >= 0 && description.length <= 140) ||
+        !(imageExists === "true" || imageExists === "false"))
     {
-        if (err) {
-            console.log(err);
+        res.status(401);
+        res.json({error: "Invalid data, please try again"});
+    } 
+
+    else {
+        let user = await getUserFromToken(token);
+
+        if (user === "false") {
+            res.status(401);
+            res.json({error: "Account does not exist"});
+        } 
+
+        else if (user === "error") {
             res.status(400);
-            res.json({error: "Something went wrong"});
+            res.json({error: "Invalid token"});
         }
-
+        
         else {
-            let killInfo = JSON.parse(fields.user);
-            let photo = files.photo;
+            let id = user.id;
+            let text = `INSERT INTO kills (user_id, date, loc_lat, loc_lon, nickname, description, img_exist) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *`;
+            let values = [id, date, latitude, longitude, nickname, description, imageExists];
+            let killCreated = await psqlCommand(text, values);
 
-            let token = killInfo.token;
-            let date = killInfo.date;
-            let latitude = killInfo.latitude;
-            let longitude = killInfo.longitude;
-            let nickname = killInfo.nickname;
-            let description = killInfo.description;
-            let imageExists = killInfo.image;
-
-            if (!killInfo.hasOwnProperty("token") || !killInfo.hasOwnProperty("date") || !killInfo.hasOwnProperty("latitude") || 
-                !killInfo.hasOwnProperty("longitude") || !killInfo.hasOwnProperty("nickname") || 
-                !killInfo.hasOwnProperty("description") || !killInfo.hasOwnProperty("image") || 
-                !(validateString(token)) || !(validateString(date)) || !(validateNumber(latitude)) || !(validateNumber(longitude)) ||
-                !(validateString(nickname)) || !(validateString(description)) || !(validateString(imageExists)) || !(validateDate(date)) || 
-                !(latitude >= -90 && latitude <= 90) || !(longitude >= -180 && longitude <= 180) ||
-                !(nickname.length >= 1 && nickname.length <= 60) || !(description.length >= 0 && description.length <= 140) ||
-                !(imageExists === "true" || imageExists === "false"))
-            {
-                res.status(401);
-                res.json({error: "Invalid data, please try again"});
-            } 
+            if (killCreated === "error") {
+                res.status(400);
+                res.json({error: "Something went wrong"});
+            }
 
             else {
-                let user = await getUserFromToken(token);
+                if (imageExists === "true") {
+                    let photoInfo = req.file;
+                    let photo = req.file.buffer;
+                    const imageType = /image.*/;
 
-                if (user === "false") {
-                    res.status(401);
-                    res.json({error: "Account does not exist"});
-                } 
-
-                else if (user === "error") {
-                    res.status(400);
-                    res.json({error: "Invalid token"});
-                }
-                
-                else {
-                    let id = user.id;
-                    let text = `INSERT INTO kills (user_id, date, loc_lat, loc_lon, nickname, description, img_exist) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *`;
-                    let values = [id, date, latitude, longitude, nickname, description, imageExists];
-                    let killCreated = await psqlCommand(text, values);
-
-                    if (killCreated === "error") {
+                    if (!photoInfo.mimetype.match(imageType)) {
                         res.status(400);
-                        res.json({error: "Something went wrong"});
+                        res.json({error: "Not an image"});
+                    }
+
+                    else if (photo.size > 2000*1024) {
+                        res.status(401);
+                        res.json({error: "Image too big"});
                     }
 
                     else {
-                        if (imageExists === "true") {
-                            const imageType = /image.*/
+                        let text = `INSERT INTO images (kill_id, imgname, img) VALUES ($1, $2, $3) RETURNING *`;
+                        let values = [killCreated[0].id, photoInfo.originalname, photo];
+                        let imageUploaded = await psqlCommand(text, values);
 
-                            if (!photo.type.match(imageType)) {
-                                res.status(400);
-                                res.json({error: "Not an image"});
-                            }
-
-                            else if (photo.size > 2000*1024) {
-                                res.status(401);
-                                res.json({error: "Image too big"});
-                            }
-                            
-                            else {
-                                let text = `INSERT INTO images (kill_id, imgname, img) VALUES ($1, $2, $3) RETURNING *`;
-                                let values = [killCreated[0].id, photo.name, photo];
-                                let imageUploaded = await psqlCommand(text, values);
-
-                                if (imageUploaded === "error") {
-                                    res.status(401);
-                                    res.json({error: "Something went wrong"});
-                                }
-
-                                else {
-                                    res.status(200);
-                                    res.json({success: "Kill created"});
-                                }
-                            }
+                        if (imageUploaded === "error") {
+                            res.status(401);
+                            res.json({error: "Something went wrong"});
                         }
 
                         else {
@@ -290,10 +280,15 @@ app.post('/kill', async function (req, res) {
                             res.json({success: "Kill created"});
                         }
                     }
-                } 
+                }
+
+                else {
+                    res.status(200);
+                    res.json({success: "Kill created"});
+                }
             }
-        }
-    });
+        } 
+    }
 });
 
 app.post('/changeUsername', function (req, res) {
