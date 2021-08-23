@@ -474,34 +474,31 @@ app.post('/deleteAccount', async function (req, res) {
                 res.json({error: "Something went wrong"});
             }
 
-            else if (userKills === "false") {
-                res.status(401);
-                res.json({error: "No kills from user"});
-            }
-
             else {
-                for (let x = 0; x < userKills.length; x++) {
-                    if (userKills[x].img_exist) {
-                        let text = `DELETE FROM images WHERE kill_id = $1`;
-                        let values = [userKills[x].id];
-                        let imageDeleted = await psqlCommand(text, values);
+                if (userKills !== "false") {
+                    for (let x = 0; x < userKills.length; x++) {
+                        if (userKills[x].img_exist) {
+                            let text = `DELETE FROM images WHERE kill_id = $1`;
+                            let values = [userKills[x].id];
+                            let imageDeleted = await psqlCommand(text, values);
 
-                        if (imageDeleted === "error") {
-                            console.log(`Image not deleted at kill ${userKills[x].id}`)
+                            if (imageDeleted === "error") {
+                                console.log(`Image not deleted at kill ${userKills[x].id}`)
+                            }
                         }
+                    }
+
+                    let text = `DELETE FROM kills WHERE user_id = $1`;
+                    let values = [user.id];
+                    let killDeleted = await psqlCommand(text, values);
+
+                    if (killDeleted === "error") {
+                        console.log(`Kills not deleted for user ${user.id}`)
                     }
                 }
 
-                let text = `DELETE FROM kills WHERE user_id = $1`;
+                let text = `DELETE FROM users WHERE id = $1`;
                 let values = [user.id];
-                let killDeleted = await psqlCommand(text, values);
-
-                if (killDeleted === "error") {
-                    console.log(`Kills not deleted for user ${user.id}`)
-                }
-
-                text = `DELETE FROM users WHERE id = $1`;
-                values = [user.id];
                 let userDeleted = await psqlCommand(text, values);
 
                 if (userDeleted === "error") {
