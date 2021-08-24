@@ -16,8 +16,9 @@ fetch(`/history?username=${user}`).then(function (response) {
     code = response.status;
     return response.json();
 }).then(function (data) {
+    
     if (code === 200) {
-        for (let i = 0; i < data.info[i].date; i++) {
+        for (let i = 0; i < data.info.length; i++) {
             date = data.info[i].date;
             kill = data.info[i].nickname;
             lat = data.info[i].loc_lat;

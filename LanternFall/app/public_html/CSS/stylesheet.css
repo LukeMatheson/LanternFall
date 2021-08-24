@@ -1,0 +1,28 @@
+body {
+    background-color: #454545;
+    font-family: 'Courier New', Courier, monospace;
+    color: #149414;
+}
+
+.center-page-block {
+    background-color: black;
+    border: 0.2vw solid #0E6B0E;
+    width: 50vw ;
+    height: 54vh ;
+    position: absolute;
+    top: 23vh;
+    left: 25vw;
+}
+
+.full-page-block {
+    background-color: black;
+    border-top: 5px solid #0E6B0E;
+    border-left: 5px solid #0E6B0E;
+    border-right: 5px solid #0E6B0E;
+    width: 64vw ;
+    height: 87vh ;
+}
+ 
+@media only screen and (min-width: 992px) {
+     
+}
