@@ -1,18 +1,19 @@
 html, body {
     background-color: #454545;
     font-family: 'Courier New', Courier, monospace;
+    color: #149414;
     margin: 0;
     padding: 0;
     width: 100%;
-    height: 100%;
+    height: 100%; 
 }
 
 .grid-style {
     display: grid;
-    grid-template-columns: auto 75% auto;
-    grid-template-rows: auto 58% auto;
-    width: 100%;
-    height: 100%;
+    grid-template-columns: auto 75vw auto;
+    grid-template-rows: auto 65vh auto;
+    width: 100vw;
+    height: 100vh;
     text-align: center;
 }
 
@@ -38,7 +39,6 @@ html, body {
     grid-column-end: 3;
     grid-row-start: 1;
     grid-row-end: 1;
-    color: #149414;
     font-size: 250%;
     display: flex;
     justify-content: center;
@@ -50,10 +50,10 @@ html, body {
     grid-column-end: 2;
     grid-row-start: 2;
     grid-row-end: 2;
-    color: #149414;
     display: flex;
     justify-content: flex-end;
     align-items: center;
+    font-size: 110%;
 }
 
 .logo {
@@ -88,6 +88,16 @@ input[type = "text"], input[type = "password"] {
     align-items: center;
 }
 
+.placeholders-style {
+    margin: 3px;
+    color: #0E6B0EB2
+}
+
+input::placeholder {
+    color: transparent;
+    text-align: center;
+}
+
 .button {
     grid-column-start: 2;
     grid-column-end: 5;
@@ -111,4 +121,84 @@ input[type = "text"], input[type = "password"] {
     font-weight: bold;
     text-align: center;
     font-size: 110%;
+}
+
+@media (max-width: 900px) {
+    .grid-style {
+        display: grid;
+        grid-template-columns: auto 80vw auto;
+        grid-template-rows: auto 80vh auto;
+        width: 100vw;
+        height: 100vh;
+        text-align: center;
+    }
+
+    .center-grid {
+        width: 100%;
+        height: 100%;
+        display: grid;
+        grid-template-columns:auto 90% auto;
+        grid-template-rows: 20% 50% auto;
+    }
+
+    .header {
+        grid-column-start: 2;
+        grid-column-end: 2;
+        grid-row-start: 1;
+        grid-row-end: 1;
+        font-size: 250%;
+        display: flex;
+        justify-content: center;
+        align-items: flex-end;
+    }
+
+    .text {
+        display: none;
+    }
+
+    .placeholders {
+        clear: both;
+        padding: 5px;
+        grid-column-start: 2;
+        grid-column-end: 2;
+        grid-row-start: 2;
+        grid-row-end: 2;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    input::placeholder {
+        color: #149414;
+        text-align: center;
+    }
+
+    .button {
+        grid-column-start: 2;
+        grid-column-end: 2;
+        grid-row-start: 3;
+        grid-row-end: 3;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+    }
+
+    .logo {
+        display: none;
+    }
+
+    .placeholders-style {
+        margin: 5px;
+        padding: 10px;
+    }
+
+    .button-style {
+        background-color: black;
+        font-family: 'Courier New', Courier, monospace;
+        border: 2px solid #149414;
+        color: #149414;
+        font-weight: bold;
+        text-align: center;
+        font-size: 110%;
+    }
 }
