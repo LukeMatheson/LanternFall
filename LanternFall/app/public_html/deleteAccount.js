@@ -1,28 +1,34 @@
+let message = document.getElementById("message");
+let token = sessionStorage.getItem("token");
+
 function onclick() {
-    let code = 200;
-    let err = document.getElementById("error-msg");
-    let div = document.createElement("div");
+    message.textContent = "";
 
-    while (err.firstChild) {
-        err.removeChild(err.firstChild);
-    }
+    let values = {
+        token: token
+    };
 
-    fetch('/deleteAccount').then(function (response) {
-        code = response.status;
-        return response.json();
-    }).then(function (data) {
-        if (code === 200) {
-            div.textContent = data.success;
-            err.append(div);
+    fetch("/deleteAccount", {
+		method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+		body: JSON.stringify(values)
+	}).then(async function (response) {
+        if (response.status === 200) {
+            await response.json().then(function (data) {
+                message.textContent = data.success;
+            });
         } else {
-            div.textContent = data.error;
-            err.append(div);
+            await response.json().then(function (error) {
+                message.textContent = error.error;
+            });
         }
-    }).catch(function (error) {
-        console.log(error);
-        div.textContent = "Something went wrong...";
-        err.append(div);
-    });
+    })
+	.catch(function (error) {
+		console.log(error);
+        message.textContent = "Something went wrong";
+	});
 }
 
 let yesButton = document.getElementById("yes-button");
