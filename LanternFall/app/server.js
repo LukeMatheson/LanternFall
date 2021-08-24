@@ -364,7 +364,7 @@ app.post('/changeUsername', async function (req, res) {
 
                 else {
                     res.status(200);
-                    res.json({info: newUsername});
+                    res.json({info: newUsername, success: "Username changed"});
                 }
             }
         } 

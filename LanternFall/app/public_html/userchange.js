@@ -2,6 +2,7 @@ function onclick() {
     let newuser = document.getElementsByName("user-change")[0].value;
     let olduser = sessionStorage.getItem("username");
     let err = document.getElementById("error-msg");
+    let token = sessionStorage.getItem("token");
     let code = 200;
 
     while (err.firstChild) {
@@ -9,8 +10,8 @@ function onclick() {
     }
 
     let values = {
-        olduser: olduser,
-        newuser: newuser
+        token: token,
+        username: newuser
     };
 
     fetch('/changeUsername', {
@@ -26,6 +27,7 @@ function onclick() {
         let div = document.createElement("div");
         if (code === 200) {
             div.textContent = data.success;
+            sessionStorage.setItem("username", data.info);
             err.append(div);
         } else {
             div.textContent = data.error;
