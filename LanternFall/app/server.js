@@ -283,7 +283,7 @@ app.post('/kill', upload.single('photo'), async function (req, res) {
                         res.json({error: "Not an image"});
                     }
 
-                    else if (photo.size > 5000*1024) {
+                    else if (photo.size > 200*1024) {
                         res.status(401);
                         res.json({error: "Image too big"});
                     }
