@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <style>
+            #leader-table {
+                border: 1px solid black;
+                border-collapse: collapse;
+            }
+
+            .head-cell {
+                border: 1px solid black;
+                padding: 10px;
+                font-weight: bold;
+            }
+
+            .cell {
+                border: 1px solid black;
+                padding: 10px;
+            }
+        </style>
+    </head>
+
+    <body>
+        <h1>Leaderboard</h1>
+
+        <div id="error-msg"></div>
+
+        <table id="leader-table">
+            <tr>
+                <td class="head-cell">Username</td>
+                <td class="head-cell">Number of Kills</td>
+            </tr>
+        </table>
+
+        <script src="leaderboard.js"></script>
+    </body>
+</html>

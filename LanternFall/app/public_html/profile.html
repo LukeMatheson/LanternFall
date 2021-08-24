@@ -3,7 +3,8 @@
     <head>
         <meta charset="utf-8">
         <style>
-            #history-table {
+            #profile-table {
+                border: 1px solid black;
                 border-collapse: collapse;
             }
 
@@ -21,19 +22,11 @@
     </head>
 
     <body>
-        <h1>Kill History</h1>
-
-        <form>
-            Enter a username:
-            <input type="text" name="user-search">
-        </form>
-
-        <button id="search-button">Search</button>
+        <h1>Profile Page</h1>
 
         <div id="error-msg"></div>
-        <br>
 
-        <table id="history-table">
+        <table id="profile-table">
             <thead>
                 <td class="head-cell">Date</td>
                 <td class="head-cell">Kill Name</td>
@@ -45,6 +38,6 @@
             <tbody id="body"></tbody>
         </table>
 
-        <script src="history.js"></script>
+        <script src="profile.js"></script>
     </body>
 </html>

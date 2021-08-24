@@ -6,11 +6,10 @@ login.addEventListener("click", function () {
 
     var userEmail = document.getElementById("email").value;
     var userPassword = document.getElementById("pwd").value;
-    var url = `http://localhost:3000/login?email=${userEmail}&password=${userPassword}`
 
     const data = { email: userEmail, password: userPassword };
 
-    fetch(url, {
+    fetch(`/login`, {
     method: 'POST', // or 'PUT'
     headers: {
         'Content-Type': 'application/json',
@@ -26,6 +25,7 @@ login.addEventListener("click", function () {
         }
         else {
             sessionStorage.setItem("token", data.token);
+            sessionStorage.setItem("username", data.username);
             location.href = "map.html";
         }
     })
