@@ -1,26 +1,49 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-    <style>
-        div {
-            padding: 5px;
-        }
-        button {
-            padding: 5px;
-        }
-    </style>
+    <link media="screen and (min-width: 800px)" rel="stylesheet" href="stylesheet.css">
+    <<link media="screen and (max-width: 800px)" rel="stylesheet" href="stylesheet.css">
+        <style>
+            div {
+                padding: 5px;
+            }
+        </style>
 </head>
+
 <body>
-<div>
-    <input type="text" placeholder="Email" id="email" required>
-</div>
-<div>
-    <input type="password" placeholder="Password" id="pwd" required>
-</div>
-<div id="error"></div>
-
-<button id="login-button">Login</button>
-
-<script src="index.js"></script>
+    <div class="grid-style">
+        <div class="center-block">
+            <div class="center-grid">
+                <div class="logo">
+                    
+                </div>
+                <div class="header">LOGIN</div>
+                <div class="text">
+                    <div>
+                        <div>Username: </div>
+                        <div>Password: </div>
+                    </div>
+                </div>
+                <div class="placeholders">
+                    <div>
+                        <div>
+                            <input type="text" id="email" required>
+                        </div>
+                        <div>
+                            <input type="password" id="pwd" required>
+                        </div>
+                    </div>
+                </div>
+                <div id="error"></div>
+                <div class="button">
+                    <button class="button-style" id="login-button">Sign In</button>
+                    <button class="button-style" id="register-button">Register</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="index.js"></script>
 </body>
+
 </html>
