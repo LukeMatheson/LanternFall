@@ -2,46 +2,46 @@
 <html>
 
 <head>
-    <link rel="stylesheet" href="./CSS/stylesheet.css">
-    <style>
-       .login-container {
-           display: grid ;
-           grid-template-columns: 25% 50% 25%;
-           grid-template-rows: 25% 50% 25%;
-       }
-
-       .title-item {
-           grid-column: 2;
-           grid-row: 1;
-       }
-       .login-content {
-           grid-column: 2;
-           grid-row: 2;
-       }
-       .error-item {
-           grid-column: 2;
-           grid-row: 3;
-       }
-    </style>
+    <link media="screen and (min-width: 800px)" rel="stylesheet" href="stylesheet.css">
+    <link media="screen and (max-width: 800px)" rel="stylesheet" href="stylesheet.css">
+        <style>
+            div {
+                padding: 5px;
+            }
+        </style>
 </head>
 
 <body>
-    <div class="center-page-block login-container">
-        <div class="title-item" id="divLoginTitle">
-            <h1>LOGIN</h1>
-        </div>
-        <div class="login-content">
-            <div >
-                <input type="text" placeholder="Email" id="email" required>
+    <div class="grid-style">
+        <div class="center-block">
+            <div class="center-grid">
+                <div class="logo">
+                    
+                </div>
+                <div class="header">LOGIN</div>
+                <div class="text">
+                    <div>
+                        <div>Username: </div>
+                        <div>Password: </div>
+                    </div>
+                </div>
+                <div class="placeholders">
+                    <div>
+                        <div>
+                            <input type="text" id="email" required>
+                        </div>
+                        <div>
+                            <input type="password" id="pwd" required>
+                        </div>
+                    </div>
+                </div>
+                <div id="error"></div>
+                <div class="button">
+                    <button class="button-style" id="login-button">Sign In</button>
+                    <button class="button-style" id="register-button">Register</button>
+                </div>
             </div>
-            <div>
-                <input type="password" placeholder="Password" id="pwd" required>
-            </div>
         </div>
-        
-        <div class="error-item" id="error"></div>
-
-        <button id="login-button">Login</button>
     </div>
     <script src="index.js"></script>
 </body>

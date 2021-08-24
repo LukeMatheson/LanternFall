@@ -1,0 +1,114 @@
+html, body {
+    background-color: #454545;
+    font-family: 'Courier New', Courier, monospace;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.grid-style {
+    display: grid;
+    grid-template-columns: auto 75% auto;
+    grid-template-rows: auto 58% auto;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+}
+
+.center-block {
+    grid-column-start: 2;
+    grid-column-end: 2;
+    grid-row-start: 2;
+    grid-row-end: 2;
+    border: 5px solid #149414;
+    background-color: black;
+}
+
+.center-grid {
+    width: 100%;
+    height: 100%;
+    display: grid;
+    grid-template-columns:auto 20% 25% 20% auto;
+    grid-template-rows: 30% 35% auto;
+}
+
+.header {
+    grid-column-start: 3;
+    grid-column-end: 3;
+    grid-row-start: 1;
+    grid-row-end: 1;
+    color: #149414;
+    font-size: 250%;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+}
+
+.text {
+    grid-column-start: 2;
+    grid-column-end: 2;
+    grid-row-start: 2;
+    grid-row-end: 2;
+    color: #149414;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.logo {
+    grid-column-start: 4;
+    grid-column-end: 6;
+    grid-row-start: 2;
+    grid-row-end: 2;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-image: url('https://s3-alpha-sig.figma.com/img/a1d7/c6f5/122fd36f2fdacd73df2e9b8ef72da90f?Expires=1630886400&Signature=CSPsPAh5qftaALI9jrs2fRe0-oO84qqxEuJXm3HoaVDdNjjIZudPlD7CLokvUphSqGKgbMsH0Sfj1KguKujhNuwxMYOpMCz4uZevI5dbFd6YvC-GtTbMr6vLHQqepVjzIuvWvSTGkJpfTmBu60sTRNxzrQfI0xLQAcY4Bn52q59q00Pv8W~uNcups7oTCNJunud90WP8R8ycHlew8JYpsr7x28nxsuZgiS4MNNfSr~q~MEqTm~h~pyAku2Aw3Z1qAlYsT6qvnODEQxBdw1atSUkuW5Wsoxu-tkhBMJbzCzldWQn0hEUrCPtT2YsNqMAgdxUw4FIt4-u4hIwNO7C-mQ__&Key-Pair-Id=APKAINTVSUGEWH5XD5UA');
+    background-size: 70% 100%;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+input[type = "text"], input[type = "password"] {
+    background-color: #0E6B0EB2;
+    border: 2px solid #149414;
+    color: #149414;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+.placeholders {
+    clear: both;
+    grid-column-start: 3;
+    grid-column-end: 3;
+    grid-row-start: 2;
+    grid-row-end: 2;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.button {
+    grid-column-start: 2;
+    grid-column-end: 5;
+    grid-row-start: 3;
+    grid-row-end: 3;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.button-style {
+    display: inline-block;
+    margin-right: 5%;
+    margin-left: 5%; 
+    background-color: black;
+    font-family: 'Courier New', Courier, monospace;
+    border: 2px solid #149414;
+    color: #149414;
+    min-width: 25%;
+    min-height: 25%;
+    font-weight: bold;
+    text-align: center;
+    font-size: 110%;
+}
