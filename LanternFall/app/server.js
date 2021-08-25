@@ -10,7 +10,7 @@ const env = require("../env.json");
 const Pool = pg.Pool;
 const pool = new Pool(env);
 
-const PORT = 80;
+const PORT = process.env.PORT || 80;
 const HOSTNAME = "localhost";
 const SALTROUNDS = 10;
 const SECRET = "*WaRsiZKrap";
