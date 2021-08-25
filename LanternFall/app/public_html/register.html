@@ -2,37 +2,59 @@
 <html lang="en">
 
 <head>
-    <link rel="stylesheet" href="./CSS/stylesheet.css">
-    <meta charset="utf-8">
+    <link rel="stylesheet" href="stylesheet.css">
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0">
 </head>
 
 <body>
-    <div class="center-page-block">
-        <h1>Register</h1>
-        <form>
-            Username:
-            <input type="text" name="Username">
-        </form>
+    <div class="grid-style">
+        <div class="center-block">
+            <div class="center-grid">
+                <div class="logo">
+                    <div>
+                        <img width="100px" height="100px"
+                            src="https://s3-alpha-sig.figma.com/img/a1d7/c6f5/122fd36f2fdacd73df2e9b8ef72da90f?Expires=1630886400&Signature=CSPsPAh5qftaALI9jrs2fRe0-oO84qqxEuJXm3HoaVDdNjjIZudPlD7CLokvUphSqGKgbMsH0Sfj1KguKujhNuwxMYOpMCz4uZevI5dbFd6YvC-GtTbMr6vLHQqepVjzIuvWvSTGkJpfTmBu60sTRNxzrQfI0xLQAcY4Bn52q59q00Pv8W~uNcups7oTCNJunud90WP8R8ycHlew8JYpsr7x28nxsuZgiS4MNNfSr~q~MEqTm~h~pyAku2Aw3Z1qAlYsT6qvnODEQxBdw1atSUkuW5Wsoxu-tkhBMJbzCzldWQn0hEUrCPtT2YsNqMAgdxUw4FIt4-u4hIwNO7C-mQ__&Key-Pair-Id=APKAINTVSUGEWH5XD5UA">
+                    </div>
+                </div>
+                <h1 class="header">Register</h1>
+                <div class="text">
+                    <div>
+                        <div class="text-style">Username: </div>
+                        <div class="text-style">Email: </div>
+                        <div class="text-style">Password: </div>
+                        <div class="text-style">Confirm Password: </div>
+                    </div>
+                </div>
+                <div class="placeholders">
+                    <div>
+                        <div>
+                            <input type="text" class="placeholders-style" placeholder="Username" name="Username">
+                        </div>
 
-        <form>
-            Email:
-            <input type="text" name="Email">
-        </form>
+                        <div>
+                            <input type="text" class="placeholders-style" placeholder="Email" name="Email">
+                        </div>
 
-        <form>
-            Password:
-            <input type="password" name="Pass">
-        </form>
+                        <div>
+                            <input type="password" class="placeholders-style" placeholder="Password" name="Pass">
+                        </div>
 
-        <form>
-            Confirm Password:
-            <input type="password" name="Confirm">
-        </form>
-        <br>
-        <button id="signup-button">Sign Up</button>
+                        <div>
+                            <input type="password" class="placeholders-style" placeholder="Confirm Password"
+                                name="Confirm">
+                        </div>
+                    </div>
+                </div>
+                <div class="button">
+                    <div>
+                        <button class="button-style" id="signup-button">Sign Up</button>
 
-        <div id="error-msg"></div>
+                        <div id="error-msg"></div>
+                    </div>
+                </div>
 
+            </div>
+        </div>
     </div>
     <script src="register.js"></script>
 </body>

@@ -30,13 +30,13 @@ html, body {
     width: 100%;
     height: 100%;
     display: grid;
-    grid-template-columns:auto 20% 25% 20% auto;
+    grid-template-columns:37.5% 25% auto;
     grid-template-rows: 30% 35% auto;
 }
 
 .header {
-    grid-column-start: 3;
-    grid-column-end: 3;
+    grid-column-start: 2;
+    grid-column-end: 2;
     grid-row-start: 1;
     grid-row-end: 1;
     font-size: 250%;
@@ -46,8 +46,8 @@ html, body {
 }
 
 .text {
-    grid-column-start: 2;
-    grid-column-end: 2;
+    grid-column-start: 1;
+    grid-column-end: 1;
     grid-row-start: 2;
     grid-row-end: 2;
     display: flex;
@@ -56,18 +56,25 @@ html, body {
     font-size: 110%;
 }
 
+.text-style {
+    margin: 10px;
+    text-align: right;
+}
+
 .logo {
-    grid-column-start: 4;
-    grid-column-end: 6;
+    grid-column-start: 3;
+    grid-column-end: 3;
     grid-row-start: 2;
     grid-row-end: 2;
     display: flex;
     justify-content: center;
     align-items: center;
-    background-image: url('https://s3-alpha-sig.figma.com/img/a1d7/c6f5/122fd36f2fdacd73df2e9b8ef72da90f?Expires=1630886400&Signature=CSPsPAh5qftaALI9jrs2fRe0-oO84qqxEuJXm3HoaVDdNjjIZudPlD7CLokvUphSqGKgbMsH0Sfj1KguKujhNuwxMYOpMCz4uZevI5dbFd6YvC-GtTbMr6vLHQqepVjzIuvWvSTGkJpfTmBu60sTRNxzrQfI0xLQAcY4Bn52q59q00Pv8W~uNcups7oTCNJunud90WP8R8ycHlew8JYpsr7x28nxsuZgiS4MNNfSr~q~MEqTm~h~pyAku2Aw3Z1qAlYsT6qvnODEQxBdw1atSUkuW5Wsoxu-tkhBMJbzCzldWQn0hEUrCPtT2YsNqMAgdxUw4FIt4-u4hIwNO7C-mQ__&Key-Pair-Id=APKAINTVSUGEWH5XD5UA');
-    background-size: 70% 100%;
-    background-repeat: no-repeat;
-    background-position: center;
+}
+
+.logo img {
+    width: 50%;
+    height: auto;
+    object-fit: cover;
 }
 
 input[type = "text"], input[type = "password"] {
@@ -79,8 +86,8 @@ input[type = "text"], input[type = "password"] {
 
 .placeholders {
     clear: both;
-    grid-column-start: 3;
-    grid-column-end: 3;
+    grid-column-start: 2;
+    grid-column-end: 2;
     grid-row-start: 2;
     grid-row-end: 2;
     display: flex;
@@ -89,7 +96,7 @@ input[type = "text"], input[type = "password"] {
 }
 
 .placeholders-style {
-    margin: 3px;
+    margin: 4px;
     color: #0E6B0EB2
 }
 
@@ -99,8 +106,8 @@ input::placeholder {
 }
 
 .button {
-    grid-column-start: 2;
-    grid-column-end: 5;
+    grid-column-start: 1;
+    grid-column-end: 4;
     grid-row-start: 3;
     grid-row-end: 3;
     display: flex;
@@ -109,18 +116,16 @@ input::placeholder {
 }
 
 .button-style {
-    display: inline-block;
-    margin-right: 5%;
-    margin-left: 5%; 
+    margin-right: 4%;
+    margin-left: 4%; 
     background-color: black;
     font-family: 'Courier New', Courier, monospace;
     border: 2px solid #149414;
     color: #149414;
-    min-width: 25%;
-    min-height: 25%;
     font-weight: bold;
     text-align: center;
     font-size: 110%;
+    min-width: 20%;
 }
 
 @media (max-width: 900px) {
