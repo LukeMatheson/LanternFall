@@ -6,7 +6,7 @@ let nickname = document.getElementById("kill-name");
 let description = document.getElementById("description");
 let image = document.getElementById("image-file");
 let message = document.getElementById("message");
-const IMAGE_QUALITY = 0.05;
+const IMAGE_QUALITY = 0.50;
 
 async function onclick() {
     message.textContent = "";
