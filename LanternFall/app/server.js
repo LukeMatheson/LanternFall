@@ -6,16 +6,14 @@ const jwt = require("jwt-simple");
 const app = express();
 const upload = multer({dest: 'uploads/', storage: multer.memoryStorage()});
 
-const port = 80;
-const hostname = "localhost";
-
-const saltRounds = 10;
-const secret = "*WaRsiZKrap";
-
 const env = require("../env.json");
 const Pool = pg.Pool;
 const pool = new Pool(env);
 
+const PORT = 80;
+const HOSTNAME = "localhost";
+const SALTROUNDS = 10;
+const SECRET = "*WaRsiZKrap";
 const KILLDELAY = 15;
 const TENMINUTE = 1000 * 600;
 const HOUR = 1000 * 3600;
@@ -85,7 +83,7 @@ app.post('/login', async function (req, res) {
     let username = user[0].username;
 
     res.status(SUCCESSSTATUS);
-    return res.json({token: jwt.encode(payload, secret), username: username});
+    return res.json({token: jwt.encode(payload, SECRET), username: username});
 });
 
 app.post('/create', async function (req, res) {
@@ -498,8 +496,8 @@ app.get('/topRecentKills', function (req, res) {
     return res.json({info: topRecentKills});
 });
 
-app.listen(port, hostname, () => {
-    console.log(`Server running on port ${port}`);
+app.listen(PORT, HOSTNAME, () => {
+    console.log(`Server running on port ${PORT}`);
 });
 
 // https://stackoverflow.com/questions/46155/how-to-validate-an-email-address-in-javascript
@@ -570,7 +568,7 @@ async function getRecentKills() {
 
 async function getUserFromToken(token) {
     try {
-        let decoded = jwt.decode(token, secret);
+        let decoded = jwt.decode(token, SECRET);
 
         let user = await getValue("users", "email", decoded.email);
 
@@ -610,7 +608,7 @@ async function validatePassword(password, hashedPassword) {
 
 async function createHashPassword(password) {
     try {
-        const res = await bcrypt.hash(password, saltRounds);
+        const res = await bcrypt.hash(password, SALTROUNDS);
         
         return res;
 
