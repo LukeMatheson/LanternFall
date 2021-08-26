@@ -26,6 +26,7 @@ fetch(`/history?username=${user}`).then(function (response) {
             desc = data.info[i].description;
 
             let tr = document.createElement("tr");
+            tr.setAttribute("id", i);
 
             let td = document.createElement("td");
             td.textContent = date;
@@ -51,6 +52,30 @@ fetch(`/history?username=${user}`).then(function (response) {
             td.textContent = desc;
             td.classList.add("cell");
             tr.append(td);
+
+            td = document.createElement("td");
+            let button = document.createElement("button");
+            button.textContent = "Delete";
+            button.addEventListener("click", function () {
+                fetch("/deletePost", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({"token": sessionStorage.getItem("token"), "kill": i}),
+                }).then(function (response) {
+                    code = response.status;
+                    return response.json();
+                }).then(function (data) {
+                    if (code === 200) {
+                        body.deleteChild(body.childNodes[i]);
+                    } else {
+                        console.log("Couldn't delete");
+                    }
+                }).catch(function (error) {
+                    console.log(error.stack);
+                })
+            });
 
             body.append(tr);
         }
