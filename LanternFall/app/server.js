@@ -3,8 +3,6 @@ const bcrypt = require("bcrypt");
 const express = require("express");
 const multer = require("multer");
 const jwt = require("jwt-simple");
-const https = require("https");
-const fs = require("mz/fs");
 const app = express();
 const upload = multer({dest: 'uploads/', storage: multer.memoryStorage()});
 
@@ -38,15 +36,6 @@ let leaderboardTimer = setInterval(getLeaderboard, HOUR);
 pool.connect().then(function () {
     console.log(`Connected to database ${env.database}`);
 });
-
-const {key, cert} = await (async () => {
-	const certdir = (await fs.readdir("/etc/letsencrypt/live"))[0];
-
-	return {
-		key: await fs.readFile(`/etc/letsencrypt/live/${certdir}/privkey.pem`),
-		cert: await fs.readFile(`/etc/letsencrypt/live/${certdir}/fullchain.pem`)
-	}
-})();
 
 app.use(express.static("public_html"));
 app.use(express.json());
@@ -507,7 +496,9 @@ app.get('/topRecentKills', function (req, res) {
     return res.json({info: topRecentKills});
 });
 
-const httpsServer = https.createServer({key, cert}, app).listen(PORT);
+app.listen(PORT, HOSTNAME, () => {
+    console.log(`Server running on port ${PORT}`);
+});
 
 // https://stackoverflow.com/questions/46155/how-to-validate-an-email-address-in-javascript
 function validateEmail(email) {
