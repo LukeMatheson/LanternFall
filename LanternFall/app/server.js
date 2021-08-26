@@ -3,6 +3,8 @@ const bcrypt = require("bcrypt");
 const express = require("express");
 const multer = require("multer");
 const jwt = require("jwt-simple");
+const https = require("https");
+const fs = require("fs");
 const app = express();
 const upload = multer({dest: 'uploads/', storage: multer.memoryStorage()});
 
@@ -10,7 +12,7 @@ const env = require("../env.json");
 const Pool = pg.Pool;
 const pool = new Pool(env);
 
-const PORT = process.env.PORT || 80;
+const PORT = process.env.PORT || 443;
 const HOSTNAME = "localhost";
 const SALTROUNDS = 10;
 const SECRET = "*WaRsiZKrap";
@@ -32,6 +34,11 @@ let leaderboard = getLeaderboard();
 let totalKillsTimer = setInterval(getTotalKills, TENMINUTE);
 let recentKillsTimer = setInterval(getRecentKills, TENMINUTE);
 let leaderboardTimer = setInterval(getLeaderboard, HOUR);
+
+const options = {
+	key: fs.readFileSync(`/etc/letsencrypt/live/lanternfall.com/privkey.pem`),
+	cert: fs.readFileSync(`/etc/letsencrypt/live/lanternfall.com/fullchain.pem`)
+}
 
 pool.connect().then(function () {
     console.log(`Connected to database ${env.database}`);
@@ -496,8 +503,8 @@ app.get('/topRecentKills', function (req, res) {
     return res.json({info: topRecentKills});
 });
 
-app.listen(PORT, HOSTNAME, () => {
-    console.log(`Server running on port ${PORT}`);
+const httpsServer = https.createServer(options, app).listen(PORT, () => {
+	console.log(`HTTPS Server running on port ${PORT}`)
 });
 
 // https://stackoverflow.com/questions/46155/how-to-validate-an-email-address-in-javascript
