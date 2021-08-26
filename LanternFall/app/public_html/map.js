@@ -77,6 +77,11 @@ function handleLocationError(browserHasGeolocation, infoWindow, pos) {
   infoWindow.open(map);
 }
 
+let button = document.getElementById("kill-button");
+button.addEventListener("click", function () {
+  location.href = "/kill.html";
+});
+
 // documentation for showing current location: https://developers.google.com/maps/documentation/javascript/geolocation
 // documentation for dropping a pin/marker: https://developers.google.com/maps/documentation/javascript/adding-a-google-map
 
