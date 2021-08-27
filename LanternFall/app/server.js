@@ -35,10 +35,6 @@ let totalKillsTimer = setInterval(getTotalKills, TENMINUTE);
 let recentKillsTimer = setInterval(getRecentKills, TENMINUTE);
 let leaderboardTimer = setInterval(getLeaderboard, HOUR);
 
-const options = {
-	key: fs.readFileSync(`/etc/letsencrypt/live/lanternfall.com/privkey.pem`),
-	cert: fs.readFileSync(`/etc/letsencrypt/live/lanternfall.com/fullchain.pem`)
-}
 
 pool.connect().then(function () {
     console.log(`Connected to database ${env.database}`);
@@ -503,9 +499,22 @@ app.get('/topRecentKills', function (req, res) {
     return res.json({info: topRecentKills});
 });
 
+// Comment out if on VPS
+app.listen(PORT, HOSTNAME, () => {
+    console.log(`Server running on port ${PORT}`);
+});
+
+// Uncomment if on VPS
+/*
+const options = {
+	key: fs.readFileSync(`/etc/letsencrypt/live/lanternfall.com/privkey.pem`),
+	cert: fs.readFileSync(`/etc/letsencrypt/live/lanternfall.com/fullchain.pem`)
+}
+
 const httpsServer = https.createServer(options, app).listen(PORT, () => {
 	console.log(`HTTPS Server running on port ${PORT}`)
 });
+*/
 
 // https://stackoverflow.com/questions/46155/how-to-validate-an-email-address-in-javascript
 function validateEmail(email) {
