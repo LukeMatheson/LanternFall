@@ -507,8 +507,8 @@ app.listen(PORT, HOSTNAME, () => {
 // Uncomment if on VPS
 /*
 const options = {
-	key: fs.readFileSync(`/etc/letsencrypt/live/lanternfall.com/privkey.pem`),
-	cert: fs.readFileSync(`/etc/letsencrypt/live/lanternfall.com/fullchain.pem`)
+	key: fs.readFileSync(`../lanternfall.com.key`),
+	cert: fs.readFileSync(`../lanternfall.com.pem`)
 }
 
 const httpsServer = https.createServer(options, app).listen(PORT, () => {
