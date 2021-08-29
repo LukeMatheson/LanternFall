@@ -3,6 +3,9 @@
   <head>
     <title>Kill Map</title>
     <style>
+        body {
+          overflow: hidden;
+        }
         #map {
             height: 100%;
         }
@@ -16,15 +19,52 @@
             left: 50%;
             top: 95%;
         }
-
+        #newPos {
+          position: relative;
+          float:right;
+          margin-right: 100px;
+        }
     </style>
     <link media="screen and (min-width: 800px)" rel="stylesheet" href="stylesheet.css">
     <link media="screen and (max-width: 800px)" rel="stylesheet" href="stylesheet.css">
+    <link rel="stylesheet" href="./CSS/hamburger.css">
   </head>
   <body>
     <div id="map"></div>
+    <button id="btnHam" class="ham-icon">Hamburger</button>
+    <div id="divHam" class="ham-container">
+      <div class="float-top"><a href="/map.html">MAP</a></div>
+      <div class="float-top"><a href="/map.html">MAP</a></div>
+      <div class="float-top"><a href="/map.html">MAP</a></div>
+      <div class="float-top"><a href="/map.html">MAP</a></div>
+      <div class="float-bot"><a href="/settings.html">Settings</a></div>
+      <div class="float-bot"><a href="/">Logout</a></div>
+    </div>
     <button id="kill-button">KILL</button>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyADWehSNfJTjlxCe5XSMTF1pPKo_LP7HqE&v=weekly"></script>
     <script src="map.js"></script>
+    <script src="./js/anime.min.js"></script>
+    <script>
+
+      let tl = anime.timeline({
+        target: ".ham-container",
+        easing: 'easeOutCirc',
+        duration: 750,
+        opacity: [0, 1],
+        width: '200px',
+        backgroundColor: "rgb(255, 0, 0)",
+        autoplay: false
+      })
+      .add({
+        delay: 100
+      })
+      .add({
+        targets: "a",
+        color: "rgb(34,139,34)",
+        translateX: [-100, 0],
+        opacity: [0, 1],
+        delay: anime.stagger(100)
+      })
+    </script>
   </body>
 </html>

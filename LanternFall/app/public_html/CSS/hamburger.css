@@ -1,0 +1,13 @@
+.ham-icon {
+    position: absolute;
+    top: 70px;
+    left: 10px;
+}
+
+.ham-container {
+    position: absolute;
+    top: 100px;
+    width: 0px;
+    height: 90vh;
+    background-color: #454545;
+}
