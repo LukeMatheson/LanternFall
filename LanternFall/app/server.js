@@ -9,7 +9,6 @@ const app = express();
 const upload = multer({dest: 'uploads/', storage: multer.memoryStorage()});
 
 const env = require("../env.json");
-const { kill } = require("process");
 const Pool = pg.Pool;
 const pool = new Pool(env);
 
