@@ -9,6 +9,7 @@ const app = express();
 const upload = multer({dest: 'uploads/', storage: multer.memoryStorage()});
 
 const env = require("../env.json");
+const { kill } = require("process");
 const Pool = pg.Pool;
 const pool = new Pool(env);
 
@@ -577,6 +578,16 @@ async function getRecentKills() {
 
     if (killList === "error") {
         return console.log("getRecentKill error"); 
+    }
+
+    for (let x = 0; x < killList.length; x++) {
+        let user = await getValue("users", "id", killList[x].user_id);
+
+        if (user === "error") {
+            return console.log("getRecentKill error"); 
+        }
+
+        killList[x].username = user[0].username;
     }
 
     topRecentKills = killList;

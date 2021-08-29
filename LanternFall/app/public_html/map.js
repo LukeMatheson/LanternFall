@@ -3,7 +3,7 @@ if (sessionStorage.getItem("username") != null) {
 
   let username = sessionStorage.getItem("username");
 
-  fetch(`/history?username=${username}`).then(function (response) {
+  fetch(`/topRecentKills`).then(function (response) {
     return response.json();
   }).then(function (data) {
 
@@ -45,7 +45,7 @@ if (sessionStorage.getItem("username") != null) {
     const marker = new google.maps.Marker({
       position: { lat: data.info[x].loc_lat, lng: data.info[x].loc_lon},
       map,
-      title: `${username} killed ${data.info[x].nickname}, date: ${data.info[x].date.substring(0, 10)}`
+      title: `${data.info[x].username} killed ${data.info[x].nickname}, date: ${data.info[x].date.substring(0, 10)}`
     });
 
     marker.addListener("click", () => {
