@@ -500,7 +500,7 @@ app.get('/topRecentKills', function (req, res) {
 });
 
 // Comment out if on VPS
-app.listen(PORT, HOSTNAME, () => {
+app.listen(80, HOSTNAME, () => {
     console.log(`Server running on port ${PORT}`);
 });
 
