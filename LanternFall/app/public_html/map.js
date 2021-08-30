@@ -135,44 +135,8 @@ if (sessionStorage.getItem("username") != null) {
       zoom: 5,
     });
 
-  map.mapTypes.set("styled_map", styleMap);
-  map.setMapTypeId("styled_map");
-  
-  const locationButton = document.createElement("button");
-  locationButton.textContent = "Pan to Current Location";
-  locationButton.classList.add("custom-map-control-button");
-  map.controls[google.maps.ControlPosition.TOP_CENTER].push(locationButton);
-  locationButton.addEventListener("click", () => {
-    // Try HTML5 geolocation.
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const pos = {
-            lat: position.coords.latitude,
-            lng: position.coords.longitude,
-          };
-          map.setCenter(pos);
-        },
-        () => {
-          let infoWindow = new google.maps.InfoWindow();
-          handleLocationError(true, infoWindow, map.getCenter());
-        }
-      );
-    } else {
-      // Browser doesn't support Geolocation
-      let infoWindow = new google.maps.InfoWindow();
-      handleLocationError(false, infoWindow, map.getCenter());
-    }
-  });
-
-  for (let x = 0; x < data.info.length; x++) {
-    infoWindow = new google.maps.InfoWindow();
-    
-    const marker = new google.maps.Marker({
-      position: { lat: data.info[x].loc_lat, lng: data.info[x].loc_lon},
-      map,
-      title: `${data.info[x].username} killed ${data.info[x].nickname}, date: ${data.info[x].date.substring(0, 10)}`
-    });
+    map.mapTypes.set("styled_map", styleMap);
+    map.setMapTypeId("styled_map");
 
     const locationButton = document.createElement("button");
     locationButton.textContent = "Pan to Current Location";
