@@ -171,7 +171,7 @@ if (sessionStorage.getItem("username") != null) {
       const marker = new google.maps.Marker({
         position: { lat: data.info[x].loc_lat, lng: data.info[x].loc_lon },
         map,
-        title: `${username} killed ${data.info[x].nickname}, date: ${data.info[x].date.substring(0, 10)}`
+        title: `${data.info[x].username} killed ${data.info[x].nickname}, date: ${data.info[x].date.substring(0, 10)}`
       });
 
       marker.addListener("click", () => {
