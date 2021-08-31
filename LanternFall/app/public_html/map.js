@@ -7,132 +7,162 @@ if (sessionStorage.getItem("username") != null) {
     return response.json();
   }).then(function (data) {
 
-    // stolen from https://snazzymaps.com/style/64462/green
     const styleMap = new google.maps.StyledMapType(
       [
         {
-          "featureType": "all",
-          "elementType": "geometry",
-          "stylers": [
-            {
-              "color": "#60a286"
-            }
-          ]
+            "featureType": "all",
+            "elementType": "geometry",
+            "stylers": [
+                {
+                    "lightness": "0"
+                },
+                {
+                    "color": "#10210e"
+                },
+                {
+                    "gamma": "1.00"
+                }
+            ]
         },
         {
-          "featureType": "all",
-          "elementType": "labels.text.fill",
-          "stylers": [
-            {
-              "gamma": 0.01
-            },
-            {
-              "lightness": 20
-            }
-          ]
+            "featureType": "all",
+            "elementType": "geometry.fill",
+            "stylers": [
+                {
+                    "visibility": "on"
+                }
+            ]
         },
         {
-          "featureType": "all",
-          "elementType": "labels.text.stroke",
-          "stylers": [
-            {
-              "saturation": -31
-            },
-            {
-              "lightness": -33
-            },
-            {
-              "weight": 2
-            },
-            {
-              "gamma": 0.8
-            }
-          ]
+            "featureType": "all",
+            "elementType": "geometry.stroke",
+            "stylers": [
+                {
+                    "visibility": "on"
+                },
+                {
+                    "weight": "2.06"
+                }
+            ]
         },
         {
-          "featureType": "all",
-          "elementType": "labels.icon",
-          "stylers": [
-            {
-              "visibility": "off"
-            }
-          ]
+            "featureType": "all",
+            "elementType": "labels.text.fill",
+            "stylers": [
+                {
+                    "gamma": 0.01
+                },
+                {
+                    "lightness": 20
+                },
+                {
+                    "visibility": "on"
+                },
+                {
+                    "color": "#e6e6e6"
+                }
+            ]
         },
         {
-          "featureType": "landscape",
-          "elementType": "geometry",
-          "stylers": [
-            {
-              "lightness": 30
-            },
-            {
-              "saturation": 30
-            }
-          ]
+            "featureType": "all",
+            "elementType": "labels.text.stroke",
+            "stylers": [
+                {
+                    "saturation": -31
+                },
+                {
+                    "lightness": -33
+                },
+                {
+                    "gamma": 0.8
+                },
+                {
+                    "color": "#727272"
+                }
+            ]
         },
         {
-          "featureType": "poi",
-          "elementType": "geometry",
-          "stylers": [
-            {
-              "saturation": 20
-            }
-          ]
+            "featureType": "all",
+            "elementType": "labels.icon",
+            "stylers": [
+                {
+                    "visibility": "off"
+                }
+            ]
         },
         {
-          "featureType": "poi.park",
-          "elementType": "geometry",
-          "stylers": [
-            {
-              "lightness": 20
-            },
-            {
-              "saturation": -20
-            }
-          ]
+            "featureType": "landscape",
+            "elementType": "geometry",
+            "stylers": [
+                {
+                    "lightness": 30
+                },
+                {
+                    "saturation": 30
+                }
+            ]
         },
         {
-          "featureType": "road",
-          "elementType": "geometry",
-          "stylers": [
-            {
-              "lightness": 10
-            },
-            {
-              "saturation": -30
-            }
-          ]
+            "featureType": "poi",
+            "elementType": "geometry",
+            "stylers": [
+                {
+                    "saturation": 20
+                }
+            ]
         },
         {
-          "featureType": "road",
-          "elementType": "geometry.stroke",
-          "stylers": [
-            {
-              "saturation": 25
-            },
-            {
-              "lightness": 25
-            }
-          ]
+            "featureType": "poi.park",
+            "elementType": "geometry",
+            "stylers": [
+                {
+                    "lightness": 20
+                },
+                {
+                    "saturation": -20
+                }
+            ]
         },
         {
-          "featureType": "water",
-          "elementType": "all",
-          "stylers": [
-            {
-              "lightness": -20
-            }
-          ]
+            "featureType": "road",
+            "elementType": "geometry",
+            "stylers": [
+                {
+                    "lightness": 10
+                },
+                {
+                    "saturation": -30
+                }
+            ]
+        },
+        {
+            "featureType": "road",
+            "elementType": "geometry.stroke",
+            "stylers": [
+                {
+                    "saturation": 25
+                },
+                {
+                    "lightness": 25
+                }
+            ]
+        },
+        {
+            "featureType": "water",
+            "elementType": "all",
+            "stylers": [
+                {
+                    "lightness": -20
+                }
+            ]
         }
       ]
     )
 
     const map = new google.maps.Map(document.getElementById("map"), {
-      mapTypeControlOptions: {
-        position: google.maps.ControlPosition.TOP_RIGHT
-      },
+      disableDefaultUI: true,
       center: { lat: 39.952583, lng: -75.165222 },
-      zoom: 5,
+      zoom: 8,
     });
 
     map.mapTypes.set("styled_map", styleMap);
