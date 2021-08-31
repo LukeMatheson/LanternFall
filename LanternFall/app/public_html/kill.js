@@ -1,12 +1,22 @@
+const IMAGE_QUALITY = 0.50;
+const MAX_WIDTH = 1080;
+const MAX_HEIGHT = 1080;
+
 let token = sessionStorage.getItem("token");
-let date = document.getElementById("date");
-let latitude = document.getElementById("latitude");
-let longitude = document.getElementById("longitude");
 let nickname = document.getElementById("kill-name");
 let description = document.getElementById("description");
 let image = document.getElementById("image-file");
 let message = document.getElementById("message");
-const IMAGE_QUALITY = 0.50;
+
+let latitude = null;
+let longitude = null;
+
+// https://www.w3schools.com/html/html5_geolocation.asp
+if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(showPosition, showError);
+} else {
+    message.textContent = "Geolocation is not supported by this browser";
+}
 
 async function onclick() {
     message.textContent = "";
@@ -23,9 +33,6 @@ async function onclick() {
 
         const {height, width} = await getImageDimensions(inputPreview);
 
-        const MAX_WIDTH = 1080;
-        const MAX_HEIGHT = 1080;
-
         const widthRatioBlob = await compressImage(inputPreview, MAX_WIDTH / width, width, height);
         const heightRatioBlob = await compressImage(inputPreview, MAX_HEIGHT / height, width, height);
 
@@ -39,9 +46,8 @@ async function onclick() {
 
     let values = {
         token: token,
-        date: date.value,
-        latitude: parseFloat(latitude.value),
-        longitude: parseFloat(longitude.value),
+        latitude: latitude,
+        longitude: longitude,
         nickname: nickname.value,
         description: description.value,
         image: imageExists 
@@ -98,4 +104,28 @@ function compressImage(image, scale, initalWidth, initalHeight){
             resolve(blob);
         }, "image/jpeg", IMAGE_QUALITY); 
     }); 
+}
+
+// https://www.w3schools.com/html/html5_geolocation.asp
+function showPosition(position) {
+    latitude = position.coords.latitude;
+    longitude = position.coords.longitude;
+}
+
+// https://www.w3schools.com/html/html5_geolocation.asp
+function showError(error) {
+    switch(error.code) {
+        case error.PERMISSION_DENIED:
+            message.textContent = "Please allow location";
+            break;
+        case error.POSITION_UNAVAILABLE:
+            message.textContent = "Location information is unavailable";
+            break;
+        case error.TIMEOUT:
+            message.textContent = "The request to get user location timed out";
+            break;
+        case error.UNKNOWN_ERROR:
+            message.textContent = "An unknown error occurred";
+            break;
+  }
 }

@@ -13,4 +13,4 @@ Google Maps API key (plz dont spam lol): AIzaSyADWehSNfJTjlxCe5XSMTF1pPKo_LP7HqE
 Postgres:
 
 psql -h 71.162.234.96 -U postgres
-password: temptemptemp
+password: Ng5L68rq

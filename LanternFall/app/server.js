@@ -16,7 +16,6 @@ const PORT = process.env.PORT || 443;
 const HOSTNAME = "localhost";
 const SALTROUNDS = 10;
 const SECRET = "*WaRsiZKrap";
-const KILLDELAY = 15;
 const TENMINUTE = 1000 * 600;
 const HOUR = 1000 * 3600;
 const MINLENGTH = 5;
@@ -208,18 +207,23 @@ app.post('/kill', upload.single('photo'), async function (req, res) {
     let killInfo = JSON.parse(req.body.user);
 
     let token = killInfo.token;
-    let date = killInfo.date;
     let latitude = killInfo.latitude;
     let longitude = killInfo.longitude;
     let nickname = killInfo.nickname;
     let description = killInfo.description;
     let imageExists = killInfo.image;
 
-    if (!killInfo.hasOwnProperty("token") || !killInfo.hasOwnProperty("date") || !killInfo.hasOwnProperty("latitude") || 
+    // https://tecadmin.net/get-current-date-time-javascript/
+    let today = new Date();
+    let date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+    let time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+    let dateTime = date+' '+time;
+
+    if (!killInfo.hasOwnProperty("token") || !killInfo.hasOwnProperty("latitude") || 
         !killInfo.hasOwnProperty("longitude") || !killInfo.hasOwnProperty("nickname") || 
         !killInfo.hasOwnProperty("description") || !killInfo.hasOwnProperty("image") || 
-        !(validateString(token)) || !(validateString(date)) || !(validateNumber(latitude)) || !(validateNumber(longitude)) ||
-        !(validateString(nickname)) || !(validateString(description)) || !(validateString(imageExists)) || !(validateDate(date)) || 
+        !(validateString(token)) || !(validateNumber(latitude)) || !(validateNumber(longitude)) ||
+        !(validateString(nickname)) || !(validateString(description)) || !(validateString(imageExists)) || 
         !(latitude >= -90 && latitude <= 90) || !(longitude >= -180 && longitude <= 180) ||
         !(nickname.length >= 1 && nickname.length <= 60) || !(description.length >= 0 && description.length <= 140) ||
         !(imageExists === "true" || imageExists === "false"))
@@ -251,16 +255,15 @@ app.post('/kill', upload.single('photo'), async function (req, res) {
         return res.json({error: "Something went wrong"});
     }
    
-    let newDate = new Date(date);
     let oldDate = new Date(oldKill[0].date);
     
-    if (Math.abs(newDate.getMinutes() - oldDate.getMinutes()) < KILLDELAY) {
+    if (Math.abs(today.getTime() - oldDate.getTime()) < TENMINUTE) {
         res.status(FAILSTATUS);
-        return res.json({error: "Wait at least 15 minutes"});
+        return res.json({error: "Wait at least 10 minutes"});
     }
 
     text = `INSERT INTO kills (user_id, date, loc_lat, loc_lon, nickname, description, img_exist) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *`;
-    values = [id, date, latitude, longitude, nickname, description, imageExists];
+    values = [id, dateTime, latitude.toFixed(4), longitude.toFixed(4), nickname, description, imageExists];
     let killCreated = await psqlCommand(text, values);
 
     if (killCreated === "error") {
@@ -501,7 +504,7 @@ app.get('/topRecentKills', function (req, res) {
 
 // Comment out if on VPS
 app.listen(80, HOSTNAME, () => {
-    console.log(`Server running on port ${PORT}`);
+    console.log(`Server running on port 80`);
 });
 
 // Uncomment if on VPS
@@ -528,19 +531,6 @@ function validateNumber(n) {
 
 function validateString(n) {
     return (typeof n) === "string";
-}
-
-// https://www.geeksforgeeks.org/how-to-check-a-date-is-valid-or-not-using-javascript/
-function validateDate(n) {
-    let d = new Date(n);
-
-    if (Object.prototype.toString.call(d) === "[object Date]") {
-        if (isNaN(d.getTime())) { 
-            return false;
-        }
-    }
-
-    return true;
 }
 
 async function getLeaderboard() {
