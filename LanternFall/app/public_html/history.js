@@ -12,7 +12,7 @@ function onclick() {
         body.removeChild(body.firstChild);
     }
 
-    fetch(`/history?username=${username}`).then(function (response) {
+    fetch(`/history/${username}`).then(function (response) {
         code = response.status;
         return response.json();
     }).then(function (data) {

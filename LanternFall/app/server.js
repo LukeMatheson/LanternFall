@@ -150,10 +150,10 @@ app.post('/create', async function (req, res) {
     return res.json({success: "Account created"});
 });
 
-app.get('/history', async function (req, res) {
-    let username = req.query.username;
+app.get('/history/:id', async function (req, res) {
+    let username = req.params.id;
 
-    if (!(req.query.hasOwnProperty("username")) || !(username.length >= MINLENGTH && username.length <= MAXLENGTH)) {
+    if (!(req.params.hasOwnProperty("id")) || !(username.length >= MINLENGTH && username.length <= MAXLENGTH)) {
         res.status(FAILSTATUS);
         return res.json({error: "Invalid credentials"});
     }
@@ -182,10 +182,10 @@ app.get('/history', async function (req, res) {
     return res.json({info: killHistory});
 });
 
-app.get(`/image`, async function(req, res) {
-    let kill_id = req.query.kill;
+app.get(`/image/:id`, async function(req, res) {
+    let kill_id = req.params.id;
 
-    if (!(req.query.hasOwnProperty("kill")) || !(validateString(kill_id))) {
+    if (!(req.params.hasOwnProperty("id")) || !(validateString(kill_id))) {
         res.status(FAILSTATUS);
         return res.json({error: "Invalid credentials"});
     }

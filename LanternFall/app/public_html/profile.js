@@ -12,7 +12,7 @@ while (body.firstChild) {
     body.removeChild(body.firstChild);
 }
 
-fetch(`/history?username=${user}`).then(function (response) {
+fetch(`/history/${user}`).then(function (response) {
     code = response.status;
     return response.json();
 }).then(function (data) {
