@@ -1,5 +1,7 @@
-let message = document.getElementById("message");
 let token = sessionStorage.getItem("token");
+let yesButton = document.getElementById("yes-button");
+let noButton = document.getElementById("no-button");
+let message = document.getElementById("message");
 
 function onclick() {
     message.textContent = "";
@@ -18,6 +20,19 @@ function onclick() {
         if (response.status === 200) {
             await response.json().then(function (data) {
                 message.textContent = data.success;
+                let timer = 5;
+                yesButton.style.display = "none";
+                noButton.style.display = "none";
+
+                setTimeout(function () {
+                    setInterval(function () {
+                        message.textContent = `Returning in ${timer--} seconds`;
+                    }, 1000);
+
+                    setTimeout(function () {
+                        location.href = "/index.html";
+                    }, 6000);
+                }, 2000);
             });
         } else {
             await response.json().then(function (error) {
@@ -31,10 +46,8 @@ function onclick() {
 	});
 }
 
-let yesButton = document.getElementById("yes-button");
 yesButton.addEventListener("click", onclick);
 
-let noButton = document.getElementById("no-button");
 noButton.addEventListener("click", function() {
     location.href = "/settings.html";
 });

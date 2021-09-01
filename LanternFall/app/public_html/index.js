@@ -34,3 +34,8 @@ login.addEventListener("click", function () {
     });
 
 }); 
+
+let register = document.getElementById("register-button");
+register.addEventListener("click", function() {
+    location.href = "/register.html";
+});

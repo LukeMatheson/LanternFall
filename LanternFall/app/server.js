@@ -97,12 +97,21 @@ app.post('/create', async function (req, res) {
 
     if (
         !req.body.hasOwnProperty("email") || !req.body.hasOwnProperty("username") || !req.body.hasOwnProperty("password") ||
-        !validateEmail(email) || !(validateString(username)) || !(validateString(password)) || 
-        !(username.length >= MINLENGTH && username.length <= MAXLENGTH) || (username.includes(" ")) || !(password.length >= MINLENGTH && password.length <= MAXLENGTH) 
+        !validateEmail(email) || !(validateString(username)) || !(validateString(password)) 
     ) {
         res.status(FAILSTATUS);
-        return res.json({error: "Invalid credentials"});
+        return res.json({error: "Incomplete data"});
     } 
+
+    if (!(username.length >= MINLENGTH && username.length <= MAXLENGTH) || (username.includes(" "))) {
+        res.status(FAILSTATUS);
+        return res.json({error: "Username needs to be at least five characters with no spaces"});
+    }
+
+    if (!(password.length >= MINLENGTH && password.length <= MAXLENGTH) || (password.includes(" "))) {
+        res.status(FAILSTATUS);
+        return res.json({error: "Password needs to be at least five characters with no spaces"});
+    }
     
     let emailExists = await getValue("users", "email", email);
     let usernameExists = await getValue("users", "username", username);
@@ -225,11 +234,20 @@ app.post('/kill', upload.single('photo'), async function (req, res) {
         !(validateString(token)) || !(validateNumber(latitude)) || !(validateNumber(longitude)) ||
         !(validateString(nickname)) || !(validateString(description)) || !(validateString(imageExists)) || 
         !(latitude >= -90 && latitude <= 90) || !(longitude >= -180 && longitude <= 180) ||
-        !(nickname.length >= 1 && nickname.length <= 60) || !(description.length >= 0 && description.length <= 140) ||
         !(imageExists === "true" || imageExists === "false"))
     {
         res.status(FAILSTATUS);
         return res.json({error: "Invalid data, please try again"});
+    } 
+
+    if (!(nickname.length >= 1 && nickname.length <= 60)) {
+        res.status(FAILSTATUS);
+        return res.json({error: "Nickname needs to be at least one character"});
+    } 
+
+    if (!(description.length >= 0 && description.length <= 140)) {
+        res.status(FAILSTATUS);
+        return res.json({error: "Description is too long"});
     } 
 
     let user = await getUserFromToken(token);

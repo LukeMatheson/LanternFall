@@ -49,5 +49,10 @@ function onclick() {
     }
 }
 
-let button = document.getElementById("signup-button");
-button.addEventListener("click", onclick);
+let signInButton = document.getElementById("signin-button");
+signInButton.addEventListener("click", onclick);
+
+let returnButton = document.getElementById("return-button");
+returnButton.addEventListener("click", function() {
+    location.href = "/index.html";
+});
