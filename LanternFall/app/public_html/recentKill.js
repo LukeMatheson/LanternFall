@@ -8,7 +8,9 @@ while (body.firstChild) {
     body.removeChild(body.firstChild);
 }
 
-fetch(`/history/${user}`).then(async function (response) {
+sessionStorage.setItem("previousPage", "recentKill.html");
+
+fetch(`/topRecentKills`).then(async function (response) {
     if (response.status === 200) {
         await response.json().then(function (data) {
             if (data.info.length !== 0) {
@@ -59,5 +61,3 @@ function get2D(num) {
         return "0" + num;
     return num.toString();
 }
-
-sessionStorage.setItem("previousPage", "profile.html");

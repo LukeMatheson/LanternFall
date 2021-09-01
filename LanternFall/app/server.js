@@ -150,6 +150,51 @@ app.post('/create', async function (req, res) {
     return res.json({success: "Account created"});
 });
 
+app.post('/imageUser', async function (req, res) {
+    let token = req.body.token;
+    let kill_id = req.body.kill;
+
+    if (
+        !(req.body.hasOwnProperty("token")) || !(req.body.hasOwnProperty("kill")) || 
+        !(validateString(token) || !(validateString(kill_id)))
+    ) {
+        res.status(FAILSTATUS);
+        return res.json({error: "Invalid credentials"});
+    }
+
+    let user = await getUserFromToken(token);
+
+    if (user === "error") {
+        res.status(ERRORSTATUS);
+        return res.json({error: "Invalid token"});
+    }
+
+    if (user === "false") {
+        res.status(FAILSTATUS);
+        return res.json({error: "Account does not exist"});
+    } 
+
+    let kill = await getValue("kills", "id", kill_id);
+
+    if (kill === "error") {
+        res.status(ERRORSTATUS);
+        return res.json({error: "Something went wrong"});
+    }
+
+    if (kill === "false") {
+        res.status(FAILSTATUS);
+        return res.json({error: "No kill"});
+    } 
+    
+    if (kill[0].user_id === user.id) {
+        res.status(SUCCESSSTATUS);
+        return res.json({success: "true"});
+    }
+
+    res.status(SUCCESSSTATUS);
+    return res.json({success: "false"});
+});
+
 app.get('/history/:id', async function (req, res) {
     let username = req.params.id;
 
@@ -180,6 +225,25 @@ app.get('/history/:id', async function (req, res) {
 
     res.status(SUCCESSSTATUS);
     return res.json({info: killHistory});
+});
+
+app.get('/killInfo/:id', async function (req, res) {
+    let kill_id = req.params.id;
+
+    if (!(req.params.hasOwnProperty("id")) || !(validateString(kill_id))) {
+        res.status(FAILSTATUS);
+        return res.json({error: "Invalid credentials"});
+    }
+
+    let killHistory = await getValue("kills", "id", kill_id);
+
+    if (killHistory === "error") {
+        res.status(ERRORSTATUS);
+        return res.json({error: "Something went wrong"});
+    }
+
+    res.status(SUCCESSSTATUS);
+    return res.json({info: killHistory[0]});
 });
 
 app.get(`/image/:id`, async function(req, res) {
@@ -272,11 +336,13 @@ app.post('/kill', upload.single('photo'), async function (req, res) {
         return res.json({error: "Something went wrong"});
     }
    
-    let oldDate = new Date(oldKill[0].date);
-    
-    if (Math.abs(today.getTime() - oldDate.getTime()) < TENMINUTE) {
-        res.status(FAILSTATUS);
-        return res.json({error: "Wait at least 10 minutes"});
+    if (oldKill.length > 0) {
+        let oldDate = new Date(oldKill[0].date);
+        
+        if (Math.abs(today.getTime() - oldDate.getTime()) < TENMINUTE) {
+            res.status(FAILSTATUS);
+            return res.json({error: "Wait at least 10 minutes"});
+        }
     }
 
     text = `INSERT INTO kills (user_id, date, loc_lat, loc_lon, nickname, description, img_exist) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *`;
