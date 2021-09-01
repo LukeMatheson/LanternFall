@@ -498,6 +498,12 @@ app.post('/deletePost', async function (req, res) {
                 return res.json({error: "Something went wrong"});
             }
 
+            for (let y = 0; y < topRecentKills.length; y++) {
+                if (topRecentKills[y].id === kill_id) {
+                    topRecentKills.splice(y, 1)
+                } 
+            }
+
             res.status(SUCCESSSTATUS);
             return res.json({success: "Kill deleted"});
         }

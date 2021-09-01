@@ -197,11 +197,12 @@ if (sessionStorage.getItem("username") != null) {
 
     for (let x = 0; x < data.info.length; x++) {
       infoWindow = new google.maps.InfoWindow();
+      let date = new Date(data.info[x].date);
 
       const marker = new google.maps.Marker({
         position: { lat: data.info[x].loc_lat, lng: data.info[x].loc_lon },
         map,
-        title: `${data.info[x].username} killed ${data.info[x].nickname}, date: ${data.info[x].date.substring(0, 10)}`
+        title: `${data.info[x].username} killed ${data.info[x].nickname} on ${date.getMonth()}/${date.getDay()}/${date.getFullYear()}`
       });
 
       marker.addListener("click", () => {
@@ -238,6 +239,7 @@ button.addEventListener("click", function () {
   location.href = "/kill.html";
 });
 
+sessionStorage.setItem("previousPage", "map.html");
 // documentation for showing current location: https://developers.google.com/maps/documentation/javascript/geolocation
 // documentation for dropping a pin/marker: https://developers.google.com/maps/documentation/javascript/adding-a-google-map
 
