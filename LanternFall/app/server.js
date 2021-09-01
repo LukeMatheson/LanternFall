@@ -34,7 +34,6 @@ let totalKillsTimer = setInterval(getTotalKills, TENMINUTE);
 let recentKillsTimer = setInterval(getRecentKills, TENMINUTE);
 let leaderboardTimer = setInterval(getLeaderboard, HOUR);
 
-
 pool.connect().then(function () {
     console.log(`Connected to database ${env.database}`);
 });
