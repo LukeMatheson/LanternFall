@@ -75,8 +75,13 @@ async function onclick() {
 	});
 }
 
-let button = document.getElementById("kill-button");
-button.addEventListener("click", onclick);
+let killButton = document.getElementById("kill-button");
+killButton.addEventListener("click", onclick);
+
+let returnButton = document.getElementById("return-button");
+returnButton.addEventListener("click", function() {
+    location.href = "/map.html"
+});
 
 // https://medium.com/swlh/boost-server-performance-with-client-side-image-compression-cdefba1c1c0d#5a44
 function getImageDimensions(image){
