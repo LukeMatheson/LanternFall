@@ -509,6 +509,14 @@ app.post('/deletePost', async function (req, res) {
                 } 
             }
 
+            text = `UPDATE users SET total_kills = total_kills - 1 WHERE id = $1`;
+            values = [user.id];
+            let incrementKills = await psqlCommand(text, values);
+
+            if (incrementKills === "error") {
+                console.log(`decrementKills did not work for ${user.id}`)
+            }
+
             res.status(SUCCESSSTATUS);
             return res.json({success: "Kill deleted"});
         }

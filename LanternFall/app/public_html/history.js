@@ -1,6 +1,5 @@
 let userSelected = sessionStorage.getItem("userSelected");
 let err = document.getElementById("error-msg");
-let head = document.getElementById("head");
 let body = document.getElementById("body");
 
 if (userSelected !== null) {
@@ -17,33 +16,10 @@ function onclick() {
         body.removeChild(body.firstChild);
     }
 
-    while (head.firstChild) {
-        head.removeChild(head.firstChild);
-    }
-
     fetch(`/history/${username}`).then(async function (response) {
         if (response.status === 200) {
             await response.json().then(function (data) {
-                let tr = document.createElement("tr");
-
-                let td = document.createElement("td");
-                td.textContent = "Username";
-                td.classList.add("head-cell");
-                tr.append(td);
-
-                td = document.createElement("td");
-                td.textContent = "Kill Name";
-                td.classList.add("head-cell");
-                tr.append(td);
-
-                td = document.createElement("td");
-                td.textContent = "Date";
-                td.classList.add("head-cell");
-                tr.append(td);
-
-                head.append(tr);
-
-                if (data.info.length !== 0) {
+                if (data.info !== "false") {
                     for (let i = 0; i < data.info.length; i++) {
                         let time = data.info[i].date;
                         let kill = data.info[i].nickname;
@@ -75,6 +51,18 @@ function onclick() {
             
                         body.append(tr);
                     }
+                }
+                
+                else {
+                    let tr = document.createElement("tr");
+
+                    let td = document.createElement("td");
+                    td.textContent = "No kills yet";
+                    td.classList.add("cell");
+                    td.colSpan = "3";
+                    tr.append(td);
+
+                    body.append(tr);
                 }
             });
         } else {

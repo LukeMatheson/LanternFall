@@ -47,6 +47,18 @@ fetch(`/topRecentKills`).then(async function (response) {
                     body.append(tr);
                 }
             }
+            
+            else {
+                let tr = document.createElement("tr");
+
+                let td = document.createElement("td");
+                td.textContent = "No kills yet";
+                td.classList.add("cell");
+                td.colSpan = "3";
+                tr.append(td);
+
+                body.append(tr);
+            }
         });
     } else {
         await response.json().then(function (error) {

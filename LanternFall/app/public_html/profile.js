@@ -11,7 +11,7 @@ while (body.firstChild) {
 fetch(`/history/${user}`).then(async function (response) {
     if (response.status === 200) {
         await response.json().then(function (data) {
-            if (data.info.length !== 0) {
+            if (data.info !== "false") {
                 for (let i = 0; i < data.info.length; i++) {
                     let time = data.info[i].date;
                     let kill = data.info[i].nickname;
@@ -43,6 +43,18 @@ fetch(`/history/${user}`).then(async function (response) {
         
                     body.append(tr);
                 }
+            }
+
+            else {
+                let tr = document.createElement("tr");
+
+                let td = document.createElement("td");
+                td.textContent = "No kills yet";
+                td.classList.add("cell");
+                td.colSpan = "3";
+                tr.append(td);
+
+                body.append(tr);
             }
         });
     } else {
