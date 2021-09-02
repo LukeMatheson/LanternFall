@@ -20,6 +20,25 @@ input:-webkit-autofill:active  {
     overflow: scroll;
 }
 
+.head-row {
+    background-color: #149414;
+    color: #000000;
+}
+
+.body-row {
+    background-color: #000000;
+    color: #149414;
+    box-shadow: inset 0 0 0 0 #149414;
+    transition: ease-out 0.3s;
+}
+
+.body-row:hover {
+    box-shadow: inset 300px 0 0 0 #149414;
+    background-color: #149414;
+    color: #000000;
+    cursor: pointer;
+}
+
 .head-cell {
     border: 1px solid #149414;
     padding: 10px;
@@ -223,6 +242,7 @@ input::placeholder {
     align-items: flex-start;
 }
 
+/*https://www.youtube.com/watch?v=zPcvAwp71uA*/
 .button-style {
     margin-right: 4%;
     margin-left: 4%; 

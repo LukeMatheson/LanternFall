@@ -1,4 +1,4 @@
-let table = document.getElementById("leader-table");
+let table = document.getElementById("body");
 let err = document.getElementById("error-msg");
 let code = 200;
 
@@ -13,6 +13,7 @@ fetch('/leaderboard').then(function (response) {
     if (code === 200) {
         for (let i = 0; i < data.info.length; i++) {
             let tr = document.createElement("tr");
+            tr.classList.add("body-row");
 
             let td = document.createElement("td");
             td.textContent = data.info[i].username;

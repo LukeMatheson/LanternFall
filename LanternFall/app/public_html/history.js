@@ -49,6 +49,7 @@ function onclick() {
                         let kill = data.info[i].nickname;
             
                         let tr = document.createElement("tr");
+                        tr.classList.add("body-row");
 
                         let date = new Date(time);
                 

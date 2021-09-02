@@ -20,6 +20,7 @@ fetch(`/topRecentKills`).then(async function (response) {
                     let user = data.info[i].username;
         
                     let tr = document.createElement("tr");
+                    tr.classList.add("body-row");
 
                     let date = new Date(time);
         

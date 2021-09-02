@@ -17,6 +17,7 @@ fetch(`/history/${user}`).then(async function (response) {
                     let kill = data.info[i].nickname;
         
                     let tr = document.createElement("tr");
+                    tr.classList.add("body-row");
 
                     let date = new Date(time);
         
