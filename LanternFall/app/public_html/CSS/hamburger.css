@@ -29,9 +29,9 @@
     padding: 5px 0 5px 3px ;
 }
 
-.ham-container div a {
+.ham-container > div > a {
     color: black;
-    font-size: 20px;
+    font-size: 30px;
     transition: color 500ms ease-out;
 }
 
@@ -40,10 +40,14 @@
     transition: all 250ms ease-in;
 }
 
-.float-top:nth-of-type(4) {
+.float-top:nth-of-type(6) {
     margin-bottom: auto;
 }
 
 .float-bot {
     order: 2;
+}
+
+.float-bot > a {
+    font-size: 20px !important;
 }

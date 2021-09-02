@@ -11,11 +11,13 @@
 <body>
     <input type="image" src="IMG/Hamburger_icon.svg.png" class="ham-icon" id="btnHam" />
     <section id="divHam" class="ham-container">
-        <div class="float-top"><a href="/about.html">ABOUT</a></div>
-        <div class="float-top"><a href="/map.html">MAP</a></div>
-        <div class="float-top"><a href="/profile.html">Profile</a></div>
-        <div class="float-top"><a href="/map.html">MAP</a></div>
-        <div class="float-bot"><a href="/settings.html">Settings</a></div>
+        <div class="float-top"><a href="about.html">ABOUT</a></div>
+        <div class="float-top"><a href="history.html">SEARCH</a></div>
+        <div class="float-top"><a href="map.html">MAP</a></div>
+        <div class="float-top"><a href="profile.html">PROFILE</a></div>
+        <div class="float-top"><a href="leaderboard.html">LEADERBOARD</a></div>
+        <div class="float-top"><a href="recentKill.html">RECENT KILLS</a></div>
+        <div class="float-bot"><a href="settings.html">Settings</a></div>
         <div class="float-bot"><a href="/">Logout</a></div>
     </section>
     <div class="full-page-grid-page">
@@ -57,40 +59,8 @@
     </div>
 
     <script src="kill.js"></script>
-    <script src="./js/anime.min.js"></script>
-    <script>
-
-        let tl = anime.timeline({
-          targets: ".ham-container",
-          easing: 'easeOutCirc',
-          duration: 750,
-          opacity: [0, 1],
-          width: '100px',
-          autoplay: false
-        })
-        .add({
-          delay: 100
-        })
-        .add({
-          targets: ".float-top, .float-bot",
-          color: "rgb(20 148 20)",
-          translateX: [-100, 0],
-          opacity: [0, 1],
-          delay: anime.stagger(100)
-        })
-        .add({
-            targets: "a",
-            color: "rgb(20 148 20)",
-            duration: 500
-        })
-  
-        document.getElementById("btnHam").addEventListener("click", () => {
-          tl.play() ;
-          tl.finished.then(() => {
-              tl.reverse() ;
-          }) ;
-        })
-      </script>
+    <script src="JS/anime.min.js"></script>
+    <script src="JS/hamburger.js"></script>
 </body>
 
 </html>
