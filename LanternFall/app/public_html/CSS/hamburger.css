@@ -8,7 +8,7 @@
 }
 
 .ham-icon:hover {
-    filter: drop-shadow(0px 0px 2px black);
+    filter: drop-shadow(0px 0px 5px black);
     transition: all 250ms ease-in;
 }
 
@@ -30,9 +30,9 @@
 }
 
 .ham-container > div > a {
-    color: #0b500b;
+    color: #0e680e;
     font-size: 30px;
-    transition: color 250ms ease-out;
+    transition: color 150ms ease-out;
 }
 
 .ham-container div a:hover {
