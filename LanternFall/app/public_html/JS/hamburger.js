@@ -14,7 +14,7 @@ let tl = anime.timeline({
     color: "rgb(20 148 20)",
     translateX: [-100, 0],
     opacity: [0, 1],
-    delay: anime.stagger(50)
+    delay: anime.stagger(40)
   })
   .add({
       targets: "a",

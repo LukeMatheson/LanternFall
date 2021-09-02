@@ -2,7 +2,7 @@ let token = sessionStorage.getItem("token");
 let login = document.getElementById("login-button");
 
 if (token !== null) {
-    sessionStorage.removeItem("token");
+    sessionStorage.clear();
 }
 
 login.addEventListener("click", function () {
