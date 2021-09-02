@@ -1,25 +1,34 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <link media="screen and (min-width: 800px)" rel="stylesheet" href="stylesheet.css">
-        <link media="screen and (max-width: 800px)" rel="stylesheet" href="stylesheet.css">
-        <link rel="icon" href="Lanternfall Logo White.png">
-    </head>
 
-    <body>
-        <h1>Change Username</h1>
+<head>
+    <link rel="stylesheet" href="stylesheet.css">
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0">
+    <link rel="icon" href="Lanternfall Logo White.png">
+</head>
 
-        <form>
-            New Username:
-            <input type="text" name="user-change">
-        </form>
+<body>
+    <div class="center-grid-page">
+        <div class="center-block">
+            <div class="center-grid">
+                <h1 class="header">Change Username</h1>
+                <div class="text">
+                    New Username:
+                </div>
+                <div class="placeholders">
+                    <input type="text" name="user-change">
+                </div>
+                <div class="button">
+                    <button class="button-style" id="submit-button">Submit</button>
+                    <button class="button-style" id="return-button">Return</button>
 
-        <button id="submit-button">Submit</button>
-        <button id="return-button">Return</button>
+                    <div id="error-msg"></div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-        <div id="error-msg"></div>
+    <script src="userchange.js"></script>
+</body>
 
-        <script src="userchange.js"></script>
-    </body>
 </html>

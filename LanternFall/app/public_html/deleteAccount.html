@@ -1,22 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <link media="screen and (min-width: 800px)" rel="stylesheet" href="stylesheet.css">
-        <link media="screen and (max-width: 800px)" rel="stylesheet" href="stylesheet.css">
-        <link rel="icon" href="Lanternfall Logo White.png">
-    </head>
 
-    <body>
-        <h1>Delete Account</h1>
+<head>
+    <link rel="stylesheet" href="stylesheet.css">
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0">
+    <link rel="icon" href="Lanternfall Logo White.png">
+</head>
 
-        <h2>Are you sure you want to delete your account?</h2>
+<body>
+    <div class="center-grid-page">
+        <div class="center-block">
+            <div class="center-grid-content">
+                <h1 class="header-content">Delete Account</h1>
+                <div class="content">
+                    <h2>Are you sure you want to delete your account?</h2>
+                </div>
+                <div class="button-content">
+                    <button class="button-style" id="yes-button">Yes</button>
+                    <button class="button-style" id="no-button">No</button>
 
-        <button id="yes-button">Yes</button>
-        <button id="no-button">No</button>
+                    <div id="message"></div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-        <div id="message"></div>
+    <script src="deleteAccount.js"></script>
+</body>
 
-        <script src="deleteAccount.js"></script>
-    </body>
 </html>

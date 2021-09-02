@@ -1,44 +1,43 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <style>
-            #profile-table {
-                border: 1px solid black;
-                border-collapse: collapse;
-            }
 
-            .head-cell {
-                border: 1px solid black;
-                padding: 10px;
-                font-weight: bold;
-            }
+<head>
+    <meta charset="utf-8">
+    <style>
+        #profile-table {
+            border: 1px solid #149414;
+            border-collapse: collapse;
+        }
+    </style>
+    <link rel="stylesheet" href="stylesheet.css">
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0">
+    <link rel="icon" href="Lanternfall Logo White.png">
+</head>
 
-            .cell {
-                border: 1px solid black;
-                padding: 10px;
-            }
-        </style>
-        <link media="screen and (min-width: 800px)" rel="stylesheet" href="stylesheet.css">
-        <link media="screen and (max-width: 800px)" rel="stylesheet" href="stylesheet.css">
-        <link rel="icon" href="Lanternfall Logo White.png">
-    </head>
+<body>
+    <div class="full-page-grid-page">
+        <div class="center-block">
+            <div class="center-grid-content">
+                <h1 class="header-content">Recent Kill</h1>
 
-    <body>
-        <h1>Recent Kill</h1>
+                <div id="error-msg"></div>
+                <div class="content">
+                    <table id="profile-table">
+                        <thead>
+                            <td class="head-cell">Date</td>
+                            <td class="head-cell">Kill Name</td>
+                            <td class="head-cell">Description</td>
+                        </thead>
 
-        <div id="error-msg"></div>
+                        <tbody id="body"></tbody>
+                    </table>
+                </div>
 
-        <table id="profile-table">
-            <thead>
-                <td class="head-cell">Date</td>
-                <td class="head-cell">Kill Name</td>
-                <td class="head-cell">Description</td>
-            </thead>
+            </div>
+        </div>
+    </div>
 
-            <tbody id="body"></tbody>
-        </table>
+    <script src="recentKill.js"></script>
+</body>
 
-        <script src="recentKill.js"></script>
-    </body>
 </html>

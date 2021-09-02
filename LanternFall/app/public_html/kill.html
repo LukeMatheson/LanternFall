@@ -1,37 +1,51 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <link media="screen and (min-width: 800px)" rel="stylesheet" href="stylesheet.css">
-        <link media="screen and (max-width: 800px)" rel="stylesheet" href="stylesheet.css">
-        <link rel="icon" href="Lanternfall Logo White.png">
-    </head>
 
-    <body>
-        <h1>Log a Kill</h1>
+<head>
+    <link rel="stylesheet" href="stylesheet.css">
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0">
+    <link rel="icon" href="Lanternfall Logo White.png">
+</head>
 
-        <form>
-            Kill Name:
-            <input type="text" id="kill-name">
-        </form>
+<body>
+    <div class="full-page-grid-page">
+        <div class="center-block">
+            <div class="center-grid">
+                <h1 class="header">Log A Kill</h1>
+                <div class="text">
+                    <div>
+                        <div class="text-style">Kill Name: </div>
+                        <div class="text-style">Description (max 140 characters): </div>
+                        <div class="text-style">Image: </div>
+                    </div>
+                </div>
+                <div class="placeholders">
+                    <div>
+                        <div>
+                            <input type="text" placeholder="Kill Name" id="kill-name">
+                        </div>
+                        <div>
+                            <textarea class="textarea-style" placeholder="Description" id="description"></textarea>
+                        </div>
+                        <div>
+                            <form method="POST" action="/submit-form" enctype="multipart/form-data">
+                                <input type="file" id="image-file" accept="image/png, image/jpg, image/jpeg">
+                            </form>
+                        </div>
+                    </div>
+                </div>
 
-        <form>
-            Description (max 140 characters):
-            <textarea id="description"></textarea>
-        </form>
+                <div class="button">
+                    <button class="button-style" id="kill-button">Kill!</button>
+                    <button class="button-style" id="return-button">Return</button>
+                </div>
 
-        <form method="POST" action="/submit-form" enctype="multipart/form-data">
-            Image:
-            <input type="file" id="image-file" accept="image/png, image/jpg, image/jpeg">
-        </form>
-
-        <div class="button">
-            <button class="button-style" id="kill-button">Kill!</button>
-            <button class="button-style" id="return-button">Return</button>
+                <div id="message"></div>
+            </div>
         </div>
+    </div>
 
-        <div id="message"></div>
+    <script src="kill.js"></script>
+</body>
 
-        <script src="kill.js"></script>
-    </body>
 </html>

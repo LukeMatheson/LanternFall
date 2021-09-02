@@ -1,51 +1,54 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <style>
-            #history-table {
-                border-collapse: collapse;
-            }
 
-            .head-cell {
-                border: 1px solid black;
-                padding: 10px;
-                font-weight: bold;
-            }
+<head>
+    <meta charset="utf-8">
+    <style>
+        #history-table {
+            border-collapse: collapse;
+            border: 1px solid #149414;
+        }
+    </style>
+    <link rel="stylesheet" href="stylesheet.css">
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0">
+    <link rel="icon" href="Lanternfall Logo White.png">
+</head>
 
-            .cell {
-                border: 1px solid black;
-                padding: 10px;
-            }
-        </style>
-        <link media="screen and (min-width: 800px)" rel="stylesheet" href="stylesheet.css">
-        <link media="screen and (max-width: 800px)" rel="stylesheet" href="stylesheet.css">
-        <link rel="icon" href="Lanternfall Logo White.png">
-    </head>
+<body>
+    <div class="full-page-grid-page">
+        <div class="center-block">
+            <div class="center-grid">
+                <h1 class="header">Search User</h1>
+                <div class="text">
+                    <div>
+                        Enter a username:
+                    </div>
+                </div>
+                <div class="placeholders">
 
-    <body>
-        <h1>Search User</h1>
+                    <input type="text" placeholder="Enter a username" name="user-search">
+                </div>
+                <div class="button-history">
+                    <button class="button-style" id="search-button">Search</button>
+                </div>
+                <div id="error-msg"></div>
 
-        <form>
-            Enter a username:
-            <input type="text" name="user-search">
-        </form>
+                <div class="table-history">
+                    <table id="history-table">
+                        <thead>
+                            <td class="head-cell">Date</td>
+                            <td class="head-cell">Kill Name</td>
+                            <td class="head-cell">Description</td>
+                        </thead>
 
-        <button id="search-button">Search</button>
+                        <tbody id="body"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
 
-        <div id="error-msg"></div>
-        <br>
+    <script src="history.js"></script>
+</body>
 
-        <table id="history-table">
-            <thead>
-                <td class="head-cell">Date</td>
-                <td class="head-cell">Kill Name</td>
-                <td class="head-cell">Description</td>
-            </thead>
-
-            <tbody id="body"></tbody>
-        </table>
-
-        <script src="history.js"></script>
-    </body>
 </html>

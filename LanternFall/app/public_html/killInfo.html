@@ -1,25 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <link media="screen and (min-width: 800px)" rel="stylesheet" href="stylesheet.css">
-        <link media="screen and (max-width: 800px)" rel="stylesheet" href="stylesheet.css">
-        <link rel="icon" href="Lanternfall Logo White.png">
-    </head>
 
-    <body>
-        <h1 id="nickname"></h1>
-        <h2 id="time"></h1>
+<head>
+    <link rel="stylesheet" href="stylesheet.css">
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0">
+    <link rel="icon" href="Lanternfall Logo White.png">
+</head>
 
-        <div id="photo"></div>
+<body>
+    <div class="full-page-grid-page">
+        <div class="center-block">
+            <h1 id="nickname"></h1>
+            <h2 id="time"></h2>
 
-        <h2 id="description"></h1>
+            <div id="photo"></div>
 
-        <div class="button">
-            <button class="button-style" id="return-button">Return</button>
-            <button class="button-style" id="delete-button">Delete</button>
+            <h3 id="description">
+            </h3>
+
+            <div class="button">
+                <button class="button-style" id="return-button">Return</button>
+                <button class="button-style" id="delete-button">Delete</button>
+            </div>
         </div>
+    </div>
 
-        <script src="killInfo.js"></script>
-    </body>
+    <script src="killInfo.js"></script>
+</body>
+
 </html>
