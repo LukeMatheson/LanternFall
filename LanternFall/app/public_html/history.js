@@ -1,5 +1,6 @@
 let userSelected = sessionStorage.getItem("userSelected");
 let err = document.getElementById("error-msg");
+let head = document.getElementById("head");
 let body = document.getElementById("body");
 
 if (userSelected !== null) {
@@ -16,34 +17,56 @@ function onclick() {
         body.removeChild(body.firstChild);
     }
 
+    while (head.firstChild) {
+        head.removeChild(head.firstChild);
+    }
+
     fetch(`/history/${username}`).then(async function (response) {
         if (response.status === 200) {
             await response.json().then(function (data) {
+                let tr = document.createElement("tr");
+
+                let td = document.createElement("td");
+                td.textContent = "Username";
+                td.classList.add("head-cell");
+                tr.append(td);
+
+                td = document.createElement("td");
+                td.textContent = "Kill Name";
+                td.classList.add("head-cell");
+                tr.append(td);
+
+                td = document.createElement("td");
+                td.textContent = "Date";
+                td.classList.add("head-cell");
+                tr.append(td);
+
+                head.append(tr);
+
                 if (data.info.length !== 0) {
                     for (let i = 0; i < data.info.length; i++) {
                         let time = data.info[i].date;
                         let kill = data.info[i].nickname;
-                        let desc = data.info[i].description;
             
                         let tr = document.createElement("tr");
 
                         let date = new Date(time);
-            
+                
                         let td = document.createElement("td");
-                        td.textContent = date.getMonth() + "/" + date.getDay() + "/" + date.getFullYear() + " " + get2D(date.getHours()) + ":" + get2D(date.getMinutes());
+                        td.textContent = username;
                         td.classList.add("cell");
                         tr.append(td);
-            
+
                         td = document.createElement("td");
                         td.textContent = kill;
                         td.classList.add("cell");
                         tr.append(td);
-            
+
                         td = document.createElement("td");
-                        td.textContent = desc;
+                        td.textContent = date.getMonth() + "/" + date.getDay() + "/" + date.getFullYear() + " " + get2D(date.getHours()) + ":" + get2D(date.getMinutes());
                         td.classList.add("cell");
                         tr.append(td);
-
+            
                         tr.addEventListener("click", function() {
                             sessionStorage.setItem("kill_id", data.info[i].id);
                             location.href = "killInfo.html";

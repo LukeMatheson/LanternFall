@@ -234,10 +234,41 @@ input::placeholder {
     text-align: center;
     font-size: 110%;
     min-width: 20%;
+    transition: ease-out 0.3s;
+    position: relative;
+    z-index: 1;
 }
 
 .button-style:hover {
-    background-color: #0E6B0EB2;
+    color: #000000;
+    cursor: pointer;
+}
+
+.button-style:before {
+    transition: 0.3s all ease;
+    position: absolute;
+    top: 0;
+    left: 50%;
+    right: 50%;
+    bottom: 0;
+    opacity: 0;
+    content: "";
+    background-color: #149414;
+}
+
+.button-style:hover:before {
+    transition: 0.3s all ease;
+    left: 0;
+    right: 0;
+    opacity: 1;
+    z-index: -1;
+}
+
+#map
+{
+    position: fixed !important; 
+    height: 100% !important;
+    width: 100% !important;
 }
 
 .textarea-style {

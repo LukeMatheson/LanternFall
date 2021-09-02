@@ -303,7 +303,7 @@ app.post('/kill', upload.single('photo'), async function (req, res) {
         return res.json({error: "Invalid data, please try again"});
     } 
 
-    if (!(nickname.length >= 1 && nickname.length <= 60)) {
+    if (!(nickname.length >= 1 && nickname.length <= 20)) {
         res.status(FAILSTATUS);
         return res.json({error: "Nickname needs to be at least one character"});
     } 

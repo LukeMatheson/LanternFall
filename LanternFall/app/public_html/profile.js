@@ -15,27 +15,26 @@ fetch(`/history/${user}`).then(async function (response) {
                 for (let i = 0; i < data.info.length; i++) {
                     let time = data.info[i].date;
                     let kill = data.info[i].nickname;
-                    let desc = data.info[i].description;
         
                     let tr = document.createElement("tr");
 
                     let date = new Date(time);
         
                     let td = document.createElement("td");
-                    td.textContent = date.getMonth() + "/" + date.getDay() + "/" + date.getFullYear() + " " + get2D(date.getHours()) + ":" + get2D(date.getMinutes());
+                    td.textContent = user;
                     td.classList.add("cell");
                     tr.append(td);
-        
+
                     td = document.createElement("td");
                     td.textContent = kill;
                     td.classList.add("cell");
                     tr.append(td);
-        
+
                     td = document.createElement("td");
-                    td.textContent = desc;
+                    td.textContent = date.getMonth() + "/" + date.getDay() + "/" + date.getFullYear() + " " + get2D(date.getHours()) + ":" + get2D(date.getMinutes());
                     td.classList.add("cell");
                     tr.append(td);
-
+        
                     tr.addEventListener("click", function() {
                         sessionStorage.setItem("kill_id", data.info[i].id)
                         location.href = "killInfo.html"
