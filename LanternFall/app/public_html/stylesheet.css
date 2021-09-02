@@ -314,7 +314,16 @@ input::placeholder {
 .textarea-style {
     background: #0E6B0EB2;
     color: #149414;
-    text-align: center;
+    border: 1px solid #149414;
+    height: 16px;
+    width: 163px;
+    margin-top: 6px;
+    margin-bottom: 2px;
+    transition: all 0.5s ease;
+}
+
+.textarea-style:focus {
+    height: 10em;
 }
 
 @media (max-width: 900px) {
