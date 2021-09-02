@@ -228,6 +228,10 @@ input::placeholder {
     min-width: 20%;
 }
 
+.button-style:hover {
+    background-color: #0E6B0EB2;
+}
+
 .textarea-style {
     background: #0E6B0EB2;
     color: #149414;
@@ -311,5 +315,9 @@ input::placeholder {
         font-weight: bold;
         text-align: center;
         font-size: 110%;
+    }
+
+    .button-style:hover {
+        background-color: #0E6B0EB2;
     }
 }
