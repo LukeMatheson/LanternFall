@@ -14,12 +14,12 @@ let tl = anime.timeline({
     color: "rgb(20 148 20)",
     translateX: [-100, 0],
     opacity: [0, 1],
-    delay: anime.stagger(100)
+    delay: anime.stagger(50)
   })
   .add({
       targets: "a",
       color: "rgb(20 148 20)",
-      duration: 250
+      duration: 150
   });
 
   document.getElementById("btnHam").addEventListener("click", () => {

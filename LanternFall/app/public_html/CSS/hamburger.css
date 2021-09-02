@@ -19,7 +19,7 @@
     top: 8vh;
     width: 0px;
     height: 90vh;
-    background-color: #303030;
+    background-color: black;
     border-right: 5px solid #149414;
     border-top: 5px solid #149414;
     border-bottom: 5px solid #149414;
@@ -30,7 +30,7 @@
 }
 
 .ham-container > div > a {
-    color: black;
+    color: rgb(58, 58, 58);
     font-size: 30px;
     transition: color 500ms ease-out;
 }
