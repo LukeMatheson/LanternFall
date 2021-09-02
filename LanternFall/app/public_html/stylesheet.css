@@ -178,7 +178,7 @@ table::-webkit-scrollbar {
     grid-row-end: 3;
     display: flex;
     justify-content: center;
-    align-items: flex-start;
+    align-items: center;
 }
 
 .header {
