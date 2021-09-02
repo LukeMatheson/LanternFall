@@ -17,7 +17,7 @@ if (sessionStorage.getItem("username") != null) {
                     "lightness": "0"
                 },
                 {
-                    "color": "#10210e"
+                    "color": "#070d06"
                 },
                 {
                     "gamma": "1.00"
