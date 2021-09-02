@@ -16,8 +16,8 @@ const PORT = process.env.PORT || 443;
 const HOSTNAME = "localhost";
 const SALTROUNDS = 10;
 const SECRET = "*WaRsiZKrap";
+const MINUTE = 1000 * 3600;
 const TENMINUTE = 1000 * 600;
-const HOUR = 1000 * 3600;
 const MINLENGTH = 5;
 const MAXLENGTH = 64;
 const MAXPHOTOSIZE = 1024 * 200;
@@ -30,9 +30,9 @@ let totalKills = getTotalKills();
 let topRecentKills = getRecentKills();
 let leaderboard = getLeaderboard();
 
-let totalKillsTimer = setInterval(getTotalKills, TENMINUTE);
-let recentKillsTimer = setInterval(getRecentKills, TENMINUTE);
-let leaderboardTimer = setInterval(getLeaderboard, HOUR);
+let totalKillsTimer = setInterval(getTotalKills, MINUTE);
+let recentKillsTimer = setInterval(getRecentKills, MINUTE);
+let leaderboardTimer = setInterval(getLeaderboard, MINUTE);
 
 pool.connect().then(function () {
     console.log(`Connected to database ${env.database}`);
