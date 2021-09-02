@@ -48,6 +48,7 @@ input:-webkit-autofill:active  {
 .cell {
     border: 1px solid #149414;
     padding: 10px;
+    word-break: break-all;
 }
 
 table::-webkit-scrollbar {
