@@ -46,7 +46,9 @@
 }
 
 .float-bot {
+    width: 85%;
     order: 2;
+    text-align: center;
 }
 
 .float-bot > a {
