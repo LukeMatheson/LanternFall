@@ -336,6 +336,15 @@ input::placeholder {
         text-align: center;
     }
 
+    .full-page-grid-page {
+        display: grid;
+        grid-template-columns: auto 85vw auto;
+        grid-template-rows: auto 85vh auto;
+        width: 100vw;
+        height: 100vh;
+        text-align: center;
+    }
+
     .center-grid {
         width: 100%;
         height: 100%;
