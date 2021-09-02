@@ -16,11 +16,21 @@
         }
         #kill-button {
             top: 95%;
+            z-index: 2;
         }
         #newPos {
           position: relative;
           float:right;
           margin-right: 100px;
+        }
+        .kill-rect {
+          z-index: 3;
+          background-color: black;
+          height: 0;
+          width: 0;
+          position: fixed;
+          top: 100%;
+          left: 50%;
         }
     </style>
     <link rel="stylesheet" href="stylesheet.css">
@@ -44,9 +54,10 @@
     <div style="height: 100%; width: 100%; text-align: center;">
       <button class="button-style" id="kill-button">KILL</button>
     </div>
+    <div class="kill-rect"></div>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyADWehSNfJTjlxCe5XSMTF1pPKo_LP7HqE&v=weekly"></script>
-    <script src="map.js"></script>
     <script src="JS/anime.min.js"></script>
+    <script src="map.js"></script>
     <script src="JS/hamburger.js"></script>
   </body>
 </html>
