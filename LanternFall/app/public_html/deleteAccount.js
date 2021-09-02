@@ -19,20 +19,18 @@ function onclick() {
 	}).then(async function (response) {
         if (response.status === 200) {
             await response.json().then(function (data) {
-                message.textContent = data.success;
-                let timer = 5;
+                message.textContent = "Deleted. Returning in 5 seconds";
+                let timer = 4;
                 yesButton.style.display = "none";
                 noButton.style.display = "none";
 
-                setTimeout(function () {
-                    setInterval(function () {
-                        message.textContent = `Returning in ${timer--} seconds`;
-                    }, 1000);
+                setInterval(function () {
+                    message.textContent = `Deleted. Returning in ${timer--} seconds`;
+                }, 1000);
 
-                    setTimeout(function () {
-                        location.href = "/index.html";
-                    }, 6000);
-                }, 2000);
+                setTimeout(function () {
+                    location.href = "/index.html";
+                }, 5000);
             });
         } else {
             await response.json().then(function (error) {

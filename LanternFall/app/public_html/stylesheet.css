@@ -8,6 +8,14 @@ html, body {
     height: 100%; 
 }
 
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus, 
+input:-webkit-autofill:active  {
+    transition: background-color 50000s;
+    -webkit-text-fill-color: #149414 !important;
+}
+
 .table {
     overflow: scroll;
 }

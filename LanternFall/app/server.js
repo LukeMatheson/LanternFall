@@ -398,11 +398,16 @@ app.post('/changeUsername', async function (req, res) {
     let newUsername = req.body.username;
 
     if (!(req.body.hasOwnProperty("token")) || !(validateString(token)) || 
-        !(req.body.hasOwnProperty("username")) || !(validateString(newUsername)) || !(newUsername.length >= MINLENGTH && newUsername.length <= MAXLENGTH))  
+        !(req.body.hasOwnProperty("username")) || !(validateString(newUsername)))  
     {
         res.status(FAILSTATUS);
         return res.json({error: "Invalid data, please try again"});
     } 
+
+    if (!(newUsername.length >= MINLENGTH && newUsername.length <= MAXLENGTH) || (newUsername.includes(" "))) {
+        res.status(FAILSTATUS);
+        return res.json({error: "Username needs to be at least five characters with no spaces"});
+    }
 
     let user = await getUserFromToken(token);
 
@@ -560,6 +565,12 @@ app.post('/deleteAccount', async function (req, res) {
 
         if (killDeleted === "error") {
             console.log(`Kills not deleted for user ${user.id}`)
+        }
+
+        for (let y = 0; y < topRecentKills.length; y++) {
+            if (topRecentKills[y].user_id === user.id) {
+                topRecentKills.splice(y, 1)
+            } 
         }
     }
 

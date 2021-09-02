@@ -59,7 +59,7 @@ if (sessionStorage.getItem("username") != null) {
                     "visibility": "on"
                 },
                 {
-                    "color": "#e6e6e6"
+                    "color": "#000000"
                 }
             ]
         },
@@ -77,7 +77,7 @@ if (sessionStorage.getItem("username") != null) {
                     "gamma": 0.8
                 },
                 {
-                    "color": "#727272"
+                    "color": "#828282"
                 }
             ]
         },

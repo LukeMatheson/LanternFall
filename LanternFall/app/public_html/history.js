@@ -1,8 +1,15 @@
+let userSelected = sessionStorage.getItem("userSelected");
+let err = document.getElementById("error-msg");
+let body = document.getElementById("body");
+
+if (userSelected !== null) {
+    document.getElementsByName("user-search")[0].value = userSelected;
+    onclick();
+    sessionStorage.removeItem("userSelected");
+}
+
 function onclick() {
     let username = document.getElementsByName("user-search")[0].value;
-    let err = document.getElementById("error-msg");
-    let body = document.getElementById("body");
-
     err.textContent = "";
 
     while (body.firstChild) {
@@ -38,9 +45,9 @@ function onclick() {
                         tr.append(td);
 
                         tr.addEventListener("click", function() {
-                            sessionStorage.setItem("kill_id", data.info[i].id)
-                            location.href = "killInfo.html"
-                        })
+                            sessionStorage.setItem("kill_id", data.info[i].id);
+                            location.href = "killInfo.html";
+                        });
             
                         body.append(tr);
                     }
