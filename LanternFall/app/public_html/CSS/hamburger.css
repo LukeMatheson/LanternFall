@@ -32,6 +32,7 @@
 .ham-container > div > a {
     color: #0e680e;
     font-size: 30px;
+    font-weight: bold;
     transition: color 150ms ease-out;
 }
 
@@ -50,4 +51,5 @@
 
 .float-bot > a {
     font-size: 20px !important;
+    font-weight: normal !important;
 }
