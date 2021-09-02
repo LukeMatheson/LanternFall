@@ -91,7 +91,7 @@ table::-webkit-scrollbar {
     height: 100%;
     display: grid;
     grid-template-columns:37.5% 25% auto;
-    grid-template-rows: 30% 35% auto;
+    grid-template-rows: 30% 35% auto 15%;
 }
 
 .center-grid-content {
@@ -99,7 +99,27 @@ table::-webkit-scrollbar {
     height: 100%;
     display: grid;
     grid-template-columns: 100%;
-    grid-template-rows: 25% 40% auto;
+    grid-template-rows: 25% 40% auto 15%;
+}
+
+.error {
+    grid-column-start: 2;
+    grid-column-end: 2;
+    grid-row-start: 4;
+    grid-row-end: 4;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.error-content {
+    grid-column-start: 1;
+    grid-column-end: 1;
+    grid-row-start: 4;
+    grid-row-end: 4;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
 }
 
 .header-content {
