@@ -40,7 +40,7 @@ function onclick() {
                         tr.append(td);
 
                         td = document.createElement("td");
-                        td.textContent = date.getMonth() + "/" + date.getDay() + "/" + date.getFullYear() + " " + get2D(date.getHours()) + ":" + get2D(date.getMinutes());
+                        td.textContent = date.getMonth() + "/" + date.getDay() + "/" + date.getFullYear();
                         td.classList.add("cell");
                         tr.append(td);
             
@@ -68,17 +68,30 @@ function onclick() {
         } else {
             await response.json().then(function (error) {
                 err.textContent = "Something went wrong";
-                console.log(error.stack);
+                console.log(error.error);
+                let tr = document.createElement("tr");
+
+                let td = document.createElement("td");
+                td.textContent = "User not found";
+                td.classList.add("cell");
+                td.colSpan = "3";
+                tr.append(td);
+
+                body.append(tr);
             });
         }
     })
-}
+    .catch(function (error) {
+        let tr = document.createElement("tr");
 
-// http://sstut.com/javascript/add-zeros-in-front-of-numbers-after-decimal-point.php
-function get2D(num) {
-    if (num.toString().length < 2) 
-        return "0" + num;
-    return num.toString();
+        let td = document.createElement("td");
+        td.textContent = "Enter a user";
+        td.classList.add("cell");
+        td.colSpan = "3";
+        tr.append(td);
+
+        body.append(tr);
+    });
 }
 
 let button = document.getElementById("search-button");

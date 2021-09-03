@@ -138,7 +138,7 @@ table::-webkit-scrollbar {
     width: 100%;
     height: 100%;
     display: grid;
-    grid-template-columns: 37.5% 25% auto;
+    grid-template-columns: 23.5% 53% auto;
     grid-template-rows: 25% 10% 10% auto;
 }
 
@@ -166,7 +166,7 @@ table::-webkit-scrollbar {
     grid-column-start: 1;
     grid-column-end: 1;
     grid-row-start: 2;
-    grid-row-end: 2;
+    grid-row-end: 4;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -226,6 +226,7 @@ table::-webkit-scrollbar {
 }
 
 input[type = "text"], input[type = "password"] {
+    width: 100%;
     background-color: #0E6B0EB2;
     border: 2px solid #149414;
     color: #149414;
@@ -239,7 +240,8 @@ input[type = "text"], input[type = "password"] {
     grid-row-start: 2;
     grid-row-end: 2;
     display: flex;
-    justify-content: center;
+    margin-left: 20%;
+    margin-right: 20%;
     align-items: center;
 }
 
