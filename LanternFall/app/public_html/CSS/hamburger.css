@@ -16,6 +16,7 @@
     position: absolute ;
     display: flex;
     flex-direction: column;
+    z-index: 3;
     top: 8vh;
     width: 0px;
     height: 90vh;
