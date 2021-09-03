@@ -170,7 +170,7 @@ table::-webkit-scrollbar {
     display: flex;
     justify-content: center;
     align-items: flex-start;
-    overflow-y: hidden;
+    overflow-y: auto;
 }
 
 .button-content {

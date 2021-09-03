@@ -12,7 +12,7 @@ fetch(`/history/${user}`).then(async function (response) {
     if (response.status === 200) {
         await response.json().then(function (data) {
             if (data.info !== "false") {
-                for (let i = 0; i < data.info.length; i++) {
+                for (let i = data.info.length - 1; i >= 0; i--) {
                     let time = data.info[i].date;
                     let kill = data.info[i].nickname;
         
@@ -32,7 +32,7 @@ fetch(`/history/${user}`).then(async function (response) {
                     tr.append(td);
 
                     td = document.createElement("td");
-                    td.textContent = date.getMonth() + "/" + date.getDay() + "/" + date.getFullYear() + " " + get2D(date.getHours()) + ":" + get2D(date.getMinutes());
+                    td.textContent = date.getMonth() + "/" + date.getDay() + "/" + date.getFullYear();
                     td.classList.add("cell");
                     tr.append(td);
         
@@ -64,12 +64,5 @@ fetch(`/history/${user}`).then(async function (response) {
         });
     }
 })
-
-// http://sstut.com/javascript/add-zeros-in-front-of-numbers-after-decimal-point.php
-function get2D(num) {
-    if (num.toString().length < 2) 
-        return "0" + num;
-    return num.toString();
-}
 
 sessionStorage.setItem("previousPage", "profile.html");

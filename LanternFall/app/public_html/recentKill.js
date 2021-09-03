@@ -35,7 +35,7 @@ fetch(`/topRecentKills`).then(async function (response) {
                     tr.append(td);
 
                     td = document.createElement("td");
-                    td.textContent = date.getMonth() + "/" + date.getDay() + "/" + date.getFullYear() + " " + get2D(date.getHours()) + ":" + get2D(date.getMinutes());
+                    td.textContent = date.getMonth() + "/" + date.getDay() + "/" + date.getFullYear();
                     td.classList.add("cell");
                     tr.append(td);
 
@@ -67,10 +67,3 @@ fetch(`/topRecentKills`).then(async function (response) {
         });
     }
 })
-
-// http://sstut.com/javascript/add-zeros-in-front-of-numbers-after-decimal-point.php
-function get2D(num) {
-    if (num.toString().length < 2) 
-        return "0" + num;
-    return num.toString();
-}
