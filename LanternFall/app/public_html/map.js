@@ -1,7 +1,4 @@
-
-if (sessionStorage.getItem("username") != null) {
-
-    let username = sessionStorage.getItem("username");
+if (sessionStorage.getItem("token") != null) {
 
     fetch(`/topRecentKills`).then(function (response) {
         return response.json();
