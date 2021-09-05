@@ -29,10 +29,8 @@ fetch(`/killInfo/${kill_id}`).then(async function (response) {
                     if (response.status === 200) {
                         await response.blob().then(function (data) {
                             var image = document.createElement("img");
-                            image.setAttribute("src", URL.createObjectURL(data));
-                            image.setAttribute("width", "50%");
-                            image.setAttribute("height", "auto");
-                            image.setAttribute("object-fit", "scale-down");
+                            image.src = URL.createObjectURL(data);
+                            image.classList.add("image");
                             photo.appendChild(image);
                         });
                     } else {

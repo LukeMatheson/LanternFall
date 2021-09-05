@@ -31,6 +31,11 @@ input:-webkit-autofill:active  {
   border-radius: 20px;
 }
 
+.image {
+    width: 40%;
+    height: auto;
+}
+
 .table {
     overflow: scroll;
 }
@@ -292,6 +297,7 @@ input:-webkit-autofill:active  {
 }
 
 .content-kill {
+    margin-top: 5px;
     grid-column-start: 2;
     grid-column-end: 3;
     grid-row-start: 3;
@@ -625,6 +631,12 @@ input[type = "text"], input[type = "password"] {
 }
 
 @media (max-width: 900px) {
+    .image {
+        width: 50vmin;
+        height: 50vmin;
+        object-fit: contain;
+    }
+
     .center-grid-page {
         display: grid;
         grid-template-columns: auto 85vw auto;
@@ -786,7 +798,7 @@ input[type = "text"], input[type = "password"] {
         height: 100%;
         display: grid;
         grid-template-columns:5% 90% auto;
-        grid-template-rows: 15% 10% auto 15%;
+        grid-template-rows: 20% 10% auto 15%;
     }
 
     .center-grid-history {
