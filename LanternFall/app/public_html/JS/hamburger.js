@@ -11,14 +11,14 @@ let tl = anime.timeline({
   })
   .add({
     targets: ".float-top, .float-bot",
-    color: "rgb(20 148 20)",
+    color: "#18b418",
     translateX: [-100, 0],
     opacity: [0, 1],
     delay: anime.stagger(40)
   })
   .add({
       targets: "a",
-      color: "rgb(20 148 20)",
+      color: "#18b418",
       duration: 150
   });
 

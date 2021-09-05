@@ -22,36 +22,33 @@
     </section>
     <div class="full-page-grid-page">
         <div class="center-block">
-            <div class="center-grid">
+            <div class="center-grid-kill">
                 <h1 class="header">Log A Kill</h1>
-                <div class="text">
-                    <div>
-                        <div class="text-style">Kill Name: </div>
-                        <div class="text-style">Description: </div>
-                        <div class="text-style">Image: </div>
-                    </div>
+                <div class="text-email">
+                    <div class="text-style">Kill Name: </div>
                 </div>
-                <div class="placeholders">
-                    <div>
-                        <div>
-                            <input type="text" placeholder="Kill Name" id="kill-name">
-                        </div>
-                        <div>
-                            <textarea class="textarea-style" placeholder="Description" id="description"></textarea>
-                        </div>
-                        <div>
-                            <form method="POST" action="/submit-form" enctype="multipart/form-data">
-                                <input style="background-color: black; border: 1px solid #149414;" type="file" id="image-file" accept="image/png, image/jpg, image/jpeg">
-                            </form>
-                        </div>
-                    </div>
+                <div class="text-user">
+                    <div class="text-style">Description: </div>
                 </div>
-
-                <div class="button">
+                <div class="text-confirm">
+                    <div class="text-style">Image: </div>
+                </div>
+                <div class="placeholders-one">
+                    <input type="text" placeholder="Kill Name" id="kill-name">
+                </div>
+                <div class="placeholders-two-three">
+                    <textarea class="textarea-style" placeholder="Description" id="description" maxlength="140"></textarea>
+                </div>
+                <div class="placeholders-four">
+                    <form method="POST" action="/submit-form" enctype="multipart/form-data">
+                        <input style="background-color: black; border: 1px solid #149414;" type="file" id="image-file" accept="image/png, image/jpg, image/jpeg">
+                    </form>
+                </div>
+                <div class="button-index">
                     <button class="button-style" id="kill-button">Kill!</button>
                     <button class="button-style" id="return-button">Return</button>
                 </div>
-                <div class="error">
+                <div class="error-index">
                     <div id="message"></div>
                 </div>
             </div>

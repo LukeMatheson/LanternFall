@@ -6,4 +6,11 @@ fetch(`/totalKills`).then(async function (response) {
             kills.textContent = `${data.info} lantern flies have been killed so far!`;
         });
     } 
+    else {
+        kills.textContent = "0";
+    }
+})
+.catch(function (error) {
+    kills.textContent = "0";
+    console.log(error.stack);
 });

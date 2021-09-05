@@ -1,6 +1,5 @@
 function onclick() {
     let newuser = document.getElementsByName("user-change")[0].value;
-    let olduser = sessionStorage.getItem("username");
     let err = document.getElementById("error-msg");
     let token = sessionStorage.getItem("token");
     let code = 200;

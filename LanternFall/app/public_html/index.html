@@ -11,7 +11,7 @@
             top: 50%;
             width: 100%;
             height: 0%;
-            background-color: #149414;
+            background-color: #18b418;
         }
     </style>
 </head>
@@ -19,33 +19,29 @@
 <body>
     <div class="center-grid-page">
         <div class="center-block">
-            <div class="center-grid">
+            <div class="center-grid-index">
                 <div class="logo">
                     <div>
                         <img width="100px" height="100px" src="Lanternfall Logo White.png">
                     </div>
                 </div>
                 <h1 class="header">LOGIN</h1>
-                <div class="text">
-                    <div>
-                        <div class="text-style">Email: </div>
-                        <div class="text-style">Password: </div>
-                    </div>
+                <div class="text-email">
+                    <div class="text-style">Email:</div>
                 </div>
-                <div class="placeholders">
-                    <div>
-                        <div>
-                            <input type="text" class="placeholders-style" placeholder="email" id="email" required>
-                        </div>
-                        <div>
-                            <input type="password" class="placeholders-style" placeholder="password" id="pwd" required>
-                        </div>
-                    </div>
+                <div class="text-password">
+                    <div class="text-style">Password:</div>
                 </div>
-                <div class="error">
+                <div class="placeholders-one">
+                    <input type="text" class="placeholders-style" placeholder="Email" id="email" maxlength="320" required>
+                </div>
+                <div class="placeholders-two">
+                    <input type="password" class="placeholders-style" placeholder="Password" id="pwd" maxlength="64" required>
+                </div>
+                <div class="error-index">
                     <div id="error"></div>
                 </div>
-                <div class="button">
+                <div class="button-index">
                     <button class="button-style" id="login-button">Sign In</button>
                     <button class="button-style" id="register-button">Register</button>
                 </div>

@@ -1,6 +1,8 @@
 let userSelected = sessionStorage.getItem("userSelected");
-let err = document.getElementById("error-msg");
+let button = document.getElementById("search-button");
 let body = document.getElementById("body");
+
+sessionStorage.setItem("previousPage", "history.html");
 
 if (userSelected !== null) {
     document.getElementsByName("user-search")[0].value = userSelected;
@@ -10,7 +12,6 @@ if (userSelected !== null) {
 
 function onclick() {
     let username = document.getElementsByName("user-search")[0].value;
-    err.textContent = "";
 
     while (body.firstChild) {
         body.removeChild(body.firstChild);
@@ -20,7 +21,7 @@ function onclick() {
         if (response.status === 200) {
             await response.json().then(function (data) {
                 if (data.info !== "false") {
-                    for (let i = 0; i < data.info.length; i++) {
+                    for (let i = data.info.length - 1; i >= 0; i--) {
                         let time = data.info[i].date;
                         let kill = data.info[i].nickname;
             
@@ -40,11 +41,12 @@ function onclick() {
                         tr.append(td);
 
                         td = document.createElement("td");
-                        td.textContent = date.getMonth() + "/" + date.getDay() + "/" + date.getFullYear();
+                        td.textContent = date.getMonth() + "/" + date.getDay() + "/" + (date.getFullYear() % 100);
                         td.classList.add("cell");
                         tr.append(td);
             
                         tr.addEventListener("click", function() {
+                            sessionStorage.setItem("userSelected", username);
                             sessionStorage.setItem("kill_id", data.info[i].id);
                             location.href = "killInfo.html";
                         });
@@ -67,7 +69,6 @@ function onclick() {
             });
         } else {
             await response.json().then(function (error) {
-                err.textContent = "Something went wrong";
                 console.log(error.error);
                 let tr = document.createElement("tr");
 
@@ -82,6 +83,7 @@ function onclick() {
         }
     })
     .catch(function (error) {
+        console.log(error.stack);
         let tr = document.createElement("tr");
 
         let td = document.createElement("td");
@@ -94,7 +96,4 @@ function onclick() {
     });
 }
 
-let button = document.getElementById("search-button");
 button.addEventListener("click", onclick);
-
-sessionStorage.setItem("previousPage", "history.html");

@@ -14,12 +14,12 @@ fetch(`/killInfo/${kill_id}`).then(async function (response) {
             let date = new Date(data.info.date);
 
             nickname.textContent = data.info.nickname;
-            time.textContent = "Date: " + date.getMonth() + "/" + date.getDay() + "/" + date.getFullYear() + " " + get2D(date.getHours()) + ":" + get2D(date.getMinutes());
+            time.textContent = date.getMonth() + "/" + date.getDay() + "/" + date.getFullYear() + " " + get2D(date.getHours()) + ":" + get2D(date.getMinutes());
             
             if (data.info.description === "") {
                 description.style.display = "none";
             } else {
-                description.textContent = "Description: " + data.info.description;
+                description.textContent = data.info.description;
             }
 
             if (data.info.img_exist === false) {

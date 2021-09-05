@@ -21,9 +21,9 @@
     width: 0px;
     height: 90vh;
     background-color: black;
-    border-right: 5px solid #149414;
-    border-top: 5px solid #149414;
-    border-bottom: 5px solid #149414;
+    border-right: 5px solid #18b418;
+    border-top: 5px solid #18b418;
+    border-bottom: 5px solid #18b418;
 }
 
 .ham-container div {
@@ -31,14 +31,14 @@
 }
 
 .ham-container > div > a {
-    color: #0e680e;
+    color: #117511;
     font-size: 30px;
     font-weight: bold;
     transition: color 150ms ease-out;
 }
 
 .ham-container div a:hover {
-    color: #7cff7c !important;
+    color: #94ff94 !important;
     transition: all 250ms ease-in;
 }
 

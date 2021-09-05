@@ -10,50 +10,45 @@
 <body>
     <div class="center-grid-page">
         <div class="center-block">
-            <div class="center-grid">
+            <div class="center-grid-index">
                 <div class="logo">
                     <div>
                         <img width="100px" height="100px" src="Lanternfall Logo White.png">
                     </div>
                 </div>
                 <h1 class="header">Register</h1>
-                <div class="text">
-                    <div>
-                        <div class="text-style">Username: </div>
-                        <div class="text-style">Email: </div>
-                        <div class="text-style">Password: </div>
-                        <div class="text-style">Confirm Password: </div>
-                    </div>
+                <div class="text-email">
+                    <div class="text-style">Email:</div>
                 </div>
-                <div class="placeholders">
-                    <div>
-                        <div>
-                            <input type="text" class="placeholders-style" placeholder="Username" name="Username">
-                        </div>
-
-                        <div>
-                            <input type="text" class="placeholders-style" placeholder="Email" name="Email">
-                        </div>
-
-                        <div>
-                            <input type="password" class="placeholders-style" placeholder="Password" name="Pass">
-                        </div>
-
-                        <div>
-                            <input type="password" class="placeholders-style" placeholder="Confirm Password"
-                                name="Confirm">
-                        </div>
-                    </div>
+                <div class="text-user">
+                    <div class="text-style">Username:</div>
+                </div>
+                <div class="text-password2">
+                    <div class="text-style">Password:</div>
+                </div>
+                <div class="text-confirm">
+                    <div class="text-style">Confirm:</div>
+                </div>
+                <div class="placeholders-one">
+                    <input type="text" class="placeholders-style" placeholder="Email" name="Email" maxlength="320" autocomplete="off">
+                </div>
+                <div class="placeholders-two">
+                    <input type="text" class="placeholders-style" placeholder="Username" name="Username" maxlength="64" autocomplete="off">
+                </div>
+                <div class="placeholders-three">
+                    <input type="password" class="placeholders-style" placeholder="Password" name="Pass" maxlength="64" autocomplete="new-password">
+                </div>
+                <div class="placeholders-four">
+                    <input type="password" class="placeholders-style" placeholder="Confirm" name="Confirm" maxlength="64" autocomplete="off">
                 </div>
 
-                <div class="button">
+                <div class="button-index">
                     <button class="button-style" id="signin-button">Sign Up</button>
                     <button class="button-style" id="return-button">Return</button>
                 </div>
-                <div class="error">
+                <div class="error-index">
                     <div id="error-msg"></div>
                 </div>
-
 
             </div>
         </div>

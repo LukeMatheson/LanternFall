@@ -3,15 +3,8 @@
 
 <head>
     <meta charset="utf-8">
-    <style>
-        #history-table {
-            width: 93%;
-            border: 1px solid #149414;
-            border-collapse: collapse;
-        }
-    </style>
-    <link rel="stylesheet" href="stylesheet.css">
     <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0">
+    <link rel="stylesheet" href="stylesheet.css">
     <link rel="icon" href="Lanternfall Logo White.png">
     <link rel="stylesheet" href="./CSS/hamburger.css">
 </head>
@@ -34,14 +27,14 @@
                 <h1 class="header">Search User</h1>
                 <div class="text">
                     <div>
-                        Enter a username:
+                        Username:
                     </div>
                 </div>
                 <div class="placeholders">
-                    <input type="text" placeholder="Enter a username" name="user-search">
+                    <input type="text" placeholder="Username" name="user-search" maxlength="64">
                 </div>
                 <div class="table-history">
-                    <table id="history-table">
+                    <table class="fancy-table">
                         <thead id="head" class="head-row">
                             <td class="head-cell">Username</td>
                             <td class="head-cell">Kill Name</td>
@@ -54,10 +47,6 @@
                 </div>
                 <div class="button-history">
                     <button class="button-style" id="search-button">Search</button>
-                </div>
-
-                <div class="error">
-                    <div id="error-msg"></div>
                 </div>
             </div>
         </div>

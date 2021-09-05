@@ -1,12 +1,5 @@
 let user = sessionStorage.getItem("username");
-let err = document.getElementById("error-msg");
 let body = document.getElementById("body");
-
-err.textContent = "";
-
-while (body.firstChild) {
-    body.removeChild(body.firstChild);
-}
 
 sessionStorage.setItem("previousPage", "recentKill.html");
 
@@ -35,7 +28,7 @@ fetch(`/topRecentKills`).then(async function (response) {
                     tr.append(td);
 
                     td = document.createElement("td");
-                    td.textContent = date.getMonth() + "/" + date.getDay() + "/" + date.getFullYear();
+                    td.textContent = date.getMonth() + "/" + date.getDay() + "/" + (date.getFullYear() % 100);
                     td.classList.add("cell");
                     tr.append(td);
 
@@ -62,8 +55,10 @@ fetch(`/topRecentKills`).then(async function (response) {
         });
     } else {
         await response.json().then(function (error) {
-            err.textContent = "Something went wrong";
-            console.log(error.stack);
+            console.log(error.error);
         });
     }
+})
+.catch(function (error) {
+    console.log(error.stack);
 })
