@@ -28,7 +28,7 @@ if (sessionStorage.getItem("token") != null) {
                         tr.append(td);
 
                         td = document.createElement("td");
-                        td.textContent = date.getMonth() + "/" + date.getDay() + "/" + (date.getFullYear() % 100);
+                        td.textContent = (date.getMonth() + 1) + "/" + date.getDate() + "/" + (date.getFullYear() % 100);
                         td.classList.add("cell");
                         tr.append(td);
             
