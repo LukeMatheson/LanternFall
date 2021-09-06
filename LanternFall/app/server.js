@@ -346,7 +346,7 @@ app.post('/kill', upload.single('photo'), async function (req, res) {
     }
 
     text = `INSERT INTO kills (user_id, date, loc_lat, loc_lon, nickname, description, img_exist) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *`;
-    values = [id, dateTime, latitude.toFixed(4), longitude.toFixed(4), nickname, description, imageExists];
+    values = [id, dateTime, latitude.toFixed(4), longitude.toFixed(4), nickname.trim(), description, imageExists];
     let killCreated = await psqlCommand(text, values);
 
     if (killCreated === "error") {

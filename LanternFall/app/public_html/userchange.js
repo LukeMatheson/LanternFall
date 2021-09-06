@@ -1,3 +1,17 @@
+let button = document.getElementById("submit-button");
+let returnButton = document.getElementById("return-button");
+
+if (sessionStorage.getItem("token") != null) {
+    button.addEventListener("click", onclick);
+
+    returnButton.addEventListener("click", function() {
+        location.href = "/settings.html";
+    });
+}
+else {
+    location.href = "index.html";
+}
+
 function onclick() {
     let newuser = document.getElementsByName("user-change")[0].value;
     let err = document.getElementById("error-msg");
@@ -34,11 +48,3 @@ function onclick() {
         }
     });
 }
-
-let button = document.getElementById("submit-button");
-button.addEventListener("click", onclick);
-
-let returnButton = document.getElementById("return-button");
-returnButton.addEventListener("click", function() {
-    location.href = "/settings.html";
-});

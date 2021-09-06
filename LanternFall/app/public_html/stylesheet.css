@@ -31,6 +31,17 @@ input:-webkit-autofill:active  {
   border-radius: 20px;
 }
 
+.gm-style .gm-style-iw-d::-webkit-scrollbar-track, 
+.gm-style .gm-style-iw-d::-webkit-scrollbar-track-piece,
+.gm-style .gm-style-iw-c,
+.gm-style .gm-style-iw-t::after { 
+  background: black;
+}
+
+button.gm-ui-hover-effect {
+    visibility: hidden;
+}
+
 .image {
     width: 40%;
     height: auto;
@@ -208,8 +219,8 @@ input:-webkit-autofill:active  {
 .error-content-delete {
     grid-column-start: 2;
     grid-column-end: 3;
-    grid-row-start: 4;
-    grid-row-end: 4;
+    grid-row-start: 5;
+    grid-row-end: 6;
     display: flex;
     justify-content: center;
     align-items: flex-start;
@@ -546,6 +557,8 @@ input[type = "text"], input[type = "password"] {
 
 ::placeholder {
     color: transparent;
+    font-family: 'Courier New', Courier, monospace;
+    font-weight: bold;
     text-align: center;
 }
 

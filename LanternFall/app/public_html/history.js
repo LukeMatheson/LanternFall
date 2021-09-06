@@ -2,12 +2,19 @@ let userSelected = sessionStorage.getItem("userSelected");
 let button = document.getElementById("search-button");
 let body = document.getElementById("body");
 
-sessionStorage.setItem("previousPage", "history.html");
+if (sessionStorage.getItem("token") != null) {
+    sessionStorage.setItem("previousPage", "history.html");
 
-if (userSelected !== null) {
-    document.getElementsByName("user-search")[0].value = userSelected;
-    onclick();
-    sessionStorage.removeItem("userSelected");
+    if (userSelected !== null) {
+        document.getElementsByName("user-search")[0].value = userSelected;
+        onclick();
+        sessionStorage.removeItem("userSelected");
+    }
+
+    button.addEventListener("click", onclick);
+}
+else {
+    location.href = "index.html";
 }
 
 function onclick() {
@@ -95,5 +102,3 @@ function onclick() {
         body.append(tr);
     });
 }
-
-button.addEventListener("click", onclick);

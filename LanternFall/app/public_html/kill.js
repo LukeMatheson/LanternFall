@@ -11,77 +11,25 @@ let message = document.getElementById("message");
 let latitude = null;
 let longitude = null;
 
-// https://www.w3schools.com/html/html5_geolocation.asp
-if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(showPosition, showError);
-} else {
-    message.textContent = "Geolocation is not supported by this browser";
-}
-
-async function onclick() {
-    message.textContent = "";
-
-    let formData = new FormData();
-    let imageExists = "false";
-
-    if (image.value != "") {
-        // https://medium.com/swlh/boost-server-performance-with-client-side-image-compression-cdefba1c1c0d#5a44
-        let uploadedImage = image.files[0];
-
-        const inputPreview = document.createElement("img");
-        inputPreview.src = URL.createObjectURL(uploadedImage);
-
-        const {height, width} = await getImageDimensions(inputPreview);
-
-        const widthRatioBlob = await compressImage(inputPreview, MAX_WIDTH / width, width, height);
-        const heightRatioBlob = await compressImage(inputPreview, MAX_HEIGHT / height, width, height);
-
-        const compressedBlob = widthRatioBlob.size > heightRatioBlob.size ? heightRatioBlob : widthRatioBlob;
-        const optimalBlob = compressedBlob.size < uploadedImage.size ? compressedBlob : uploadedImage; 
-
-        console.log(`Inital Size: ${uploadedImage.size}. Compressed Size: ${optimalBlob.size}`);
-        formData.append("photo", optimalBlob);
-        imageExists = "true";
+if (sessionStorage.getItem("token") != null) {
+    // https://www.w3schools.com/html/html5_geolocation.asp
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(showPosition, showError);
+    } else {
+        message.textContent = "Geolocation is not supported by this browser";
     }
 
-    let values = {
-        token: token,
-        latitude: latitude,
-        longitude: longitude,
-        nickname: nickname.value,
-        description: description.value,
-        image: imageExists 
-    };
-    
-    formData.append("user", JSON.stringify(values)); 
+    let killButton = document.getElementById("kill-button");
+    killButton.addEventListener("click", onclick);
 
-    fetch("/kill", {
-		method: "POST",
-		body: formData
-	}).then(async function (response) {
-        if (response.status === 200) {
-            await response.json().then(function (data) {
-                message.textContent = data.success;
-            });
-        } else {
-            await response.json().then(function (error) {
-                message.textContent = error.error;
-            });
-        }
-    })
-	.catch(function (error) {
-		console.log(error);
-        message.textContent = "Something went wrong";
-	});
+    let returnButton = document.getElementById("return-button");
+    returnButton.addEventListener("click", function() {
+        location.href = "/map.html"
+    });
 }
-
-let killButton = document.getElementById("kill-button");
-killButton.addEventListener("click", onclick);
-
-let returnButton = document.getElementById("return-button");
-returnButton.addEventListener("click", function() {
-    location.href = "/map.html"
-});
+else {
+    location.href = "index.html";
+}
 
 // https://medium.com/swlh/boost-server-performance-with-client-side-image-compression-cdefba1c1c0d#5a44
 function getImageDimensions(image){
@@ -133,4 +81,61 @@ function showError(error) {
             message.textContent = "An unknown error occurred";
             break;
   }
+}
+
+async function onclick() {
+    message.textContent = "";
+
+    let formData = new FormData();
+    let imageExists = "false";
+
+    if (image.value != "") {
+        // https://medium.com/swlh/boost-server-performance-with-client-side-image-compression-cdefba1c1c0d#5a44
+        let uploadedImage = image.files[0];
+
+        const inputPreview = document.createElement("img");
+        inputPreview.src = URL.createObjectURL(uploadedImage);
+
+        const {height, width} = await getImageDimensions(inputPreview);
+
+        const widthRatioBlob = await compressImage(inputPreview, MAX_WIDTH / width, width, height);
+        const heightRatioBlob = await compressImage(inputPreview, MAX_HEIGHT / height, width, height);
+
+        const compressedBlob = widthRatioBlob.size > heightRatioBlob.size ? heightRatioBlob : widthRatioBlob;
+        const optimalBlob = compressedBlob.size < uploadedImage.size ? compressedBlob : uploadedImage; 
+
+        console.log(`Inital Size: ${uploadedImage.size}. Compressed Size: ${optimalBlob.size}`);
+        formData.append("photo", optimalBlob);
+        imageExists = "true";
+    }
+
+    let values = {
+        token: token,
+        latitude: latitude,
+        longitude: longitude,
+        nickname: nickname.value,
+        description: description.value,
+        image: imageExists 
+    };
+    
+    formData.append("user", JSON.stringify(values)); 
+
+    fetch("/kill", {
+        method: "POST",
+        body: formData
+    }).then(async function (response) {
+        if (response.status === 200) {
+            await response.json().then(function (data) {
+                message.textContent = data.success;
+            });
+        } else {
+            await response.json().then(function (error) {
+                message.textContent = error.error;
+            });
+        }
+    })
+    .catch(function (error) {
+        console.log(error);
+        message.textContent = "Something went wrong";
+    });
 }

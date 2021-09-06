@@ -3,6 +3,17 @@ let yesButton = document.getElementById("yes-button");
 let noButton = document.getElementById("no-button");
 let message = document.getElementById("message");
 
+if (sessionStorage.getItem("token") != null) {
+    yesButton.addEventListener("click", onclick);
+
+    noButton.addEventListener("click", function() {
+        location.href = "/settings.html";
+    });
+}
+else {
+    location.href = "index.html";
+}
+
 function onclick() {
     message.textContent = "";
 
@@ -11,12 +22,12 @@ function onclick() {
     };
 
     fetch("/deleteAccount", {
-		method: "POST",
+        method: "POST",
         headers: {
             "Content-Type": "application/json",
         },
-		body: JSON.stringify(values)
-	}).then(async function (response) {
+        body: JSON.stringify(values)
+    }).then(async function (response) {
         if (response.status === 200) {
             await response.json().then(function (data) {
                 message.textContent = "Deleted. Returning in 5 seconds";
@@ -38,14 +49,8 @@ function onclick() {
             });
         }
     })
-	.catch(function (error) {
-		console.log(error);
+    .catch(function (error) {
+        console.log(error);
         message.textContent = "Something went wrong";
-	});
+    });
 }
-
-yesButton.addEventListener("click", onclick);
-
-noButton.addEventListener("click", function() {
-    location.href = "/settings.html";
-});

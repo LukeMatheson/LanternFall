@@ -1,9 +1,7 @@
 let token = sessionStorage.getItem("token");
 let login = document.getElementById("login-button");
 
-if (token !== null) {
-    sessionStorage.clear();
-}
+sessionStorage.clear();
 
 login.addEventListener("click", function () {
 

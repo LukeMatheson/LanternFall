@@ -157,6 +157,7 @@ if (sessionStorage.getItem("token") != null) {
         )
 
         const map = new google.maps.Map(document.getElementById("map"), {
+            clickableIcons: false,
             disableDefaultUI: true,
             center: { lat: 39.952583, lng: -75.165222 },
             zoom: 8,
@@ -195,14 +196,16 @@ if (sessionStorage.getItem("token") != null) {
 
         for (let x = 0; x < data.info.length; x++) {
             infoWindow = new google.maps.InfoWindow();
-            let date = new Date(data.info[x].date);
 
             const marker = new google.maps.Marker({
                 position: { lat: data.info[x].loc_lat, lng: data.info[x].loc_lon },
                 map,
-                title: `${data.info[x].username} killed ${data.info[x].nickname} on ${date.getMonth()}/${date.getDay()}/${date.getFullYear()}`,
+                title: `<button class="button-style" onclick="takeToKill(${data.info[x].id})" style="width: 94%;">${data.info[x].username} killed "${data.info[x].nickname}"</button>`,
                 icon: "Marker.png"
             });
+            /*
+    font-family: 'Courier New', Courier, monospace;
+    */
 
             marker.addListener("click", () => {
                 infoWindow.close();
@@ -221,6 +224,11 @@ if (sessionStorage.getItem("token") != null) {
 
 else {
     location.href = "index.html";
+}
+
+function takeToKill(kill_id) {
+    sessionStorage.setItem("kill_id", kill_id)
+    location.href = "killInfo.html"
 }
 
 function handleLocationError(browserHasGeolocation, infoWindow, pos) {
