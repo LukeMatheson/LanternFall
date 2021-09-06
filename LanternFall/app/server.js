@@ -39,7 +39,11 @@ pool.connect().then(function () {
     console.log(`Connected to database ${env.database}`);
 });
 
-app.use(helmet());
+app.use(
+  helmet({
+    contentSecurityPolicy: false,
+  })
+);
 app.use(express.static("public_html"));
 app.use(express.json());
 
