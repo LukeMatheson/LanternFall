@@ -632,6 +632,8 @@ input[type = "text"], input[type = "password"] {
 }
 
 .textarea-style {
+    font-family: 'Courier New', Courier, monospace;
+    font-weight: bold;
     background: #0E6B0EB2;
     color: #18b418;
     border: 2px solid #18b418;

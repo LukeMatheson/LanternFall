@@ -24,7 +24,7 @@ function onclick() {
         body.removeChild(body.firstChild);
     }
 
-    fetch(`/history/${username}`).then(async function (response) {
+    fetch(`/history/${username.trim()}`).then(async function (response) {
         if (response.status === 200) {
             await response.json().then(function (data) {
                 if (data.info !== "false") {
