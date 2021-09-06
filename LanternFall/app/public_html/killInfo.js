@@ -15,7 +15,7 @@ if (sessionStorage.getItem("token") != null) {
                 let date = new Date(data.info.date);
 
                 nickname.textContent = data.info.nickname;
-                time.textContent = date.getMonth() + "/" + date.getDay() + "/" + date.getFullYear() + " " + get2D(date.getHours()) + ":" + get2D(date.getMinutes());
+                time.textContent = (date.getMonth() + 1) + "/" + date.getDate() + "/" + (date.getFullYear() % 100) + " " + get2D(date.getHours()) + ":" + get2D(date.getMinutes());
                 
                 if (data.info.description === "") {
                     description.style.display = "none";
