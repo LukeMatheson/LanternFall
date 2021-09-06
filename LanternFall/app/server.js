@@ -5,6 +5,7 @@ const multer = require("multer");
 const jwt = require("jwt-simple");
 const https = require("https");
 const fs = require("fs");
+const helmet = require('helmet');
 const app = express();
 const upload = multer({dest: 'uploads/', storage: multer.memoryStorage()});
 
@@ -38,6 +39,7 @@ pool.connect().then(function () {
     console.log(`Connected to database ${env.database}`);
 });
 
+app.use(helmet());
 app.use(express.static("public_html"));
 app.use(express.json());
 
