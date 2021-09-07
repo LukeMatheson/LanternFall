@@ -200,16 +200,12 @@ if (sessionStorage.getItem("token") != null) {
             const marker = new google.maps.Marker({
                 position: { lat: data.info[x].loc_lat, lng: data.info[x].loc_lon },
                 map,
-                title: `<button class="button-style" onclick="takeToKill(${data.info[x].id})" style="width: 94%;">${data.info[x].username} killed "${data.info[x].nickname}"</button>`,
                 icon: "Marker.png"
             });
-            /*
-    font-family: 'Courier New', Courier, monospace;
-    */
 
             marker.addListener("click", () => {
                 infoWindow.close();
-                infoWindow.setContent(marker.getTitle());
+                infoWindow.setContent(`<button class="button-style" onclick="takeToKill(${data.info[x].id})" style="width: 94%;">${data.info[x].username} killed "${data.info[x].nickname}"</button>`);
                 infoWindow.open(marker.getMap(), marker);
             });
         }
